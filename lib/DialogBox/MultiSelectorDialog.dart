@@ -14,7 +14,7 @@ class MultiSelectorDialog<T> extends StatefulWidget {
   final double? height;
   final double? width;
   final String? searchHint;
-  final Color? Function(T)? colorator;
+  final Color? Function(T)? colorBuilder;
   final Color? backgroundColor;
   final Color? unselectedColor;
   final Icon? searchIcon;
@@ -29,8 +29,8 @@ class MultiSelectorDialog<T> extends StatefulWidget {
   final ShapeBorder? shape;
   final EdgeInsets? contentPadding;
   final bool showSelectAll;
-  final Widget? selectAllText;
-  final Widget? deselectAllText;
+  final String? selectAllText;
+  final String? deselectAllText;
   final bool useChipsForSelection;
   final double? dialogWidth;
   final double? dialogHeight;
@@ -48,7 +48,7 @@ class MultiSelectorDialog<T> extends StatefulWidget {
     this.height,
     this.width,
     this.searchHint,
-    this.colorator,
+    this.colorBuilder,
     this.backgroundColor,
     this.unselectedColor,
     this.searchIcon,
@@ -109,7 +109,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
   Widget _buildListItem(MultiSelectorItem<T> item) {
     final theme = Theme.of(context);
     final isSelected = item.selected;
-    final itemColor = widget.colorator?.call(item.value) ?? widget.selectedColor ?? theme.primaryColor;
+    final itemColor = widget.colorBuilder?.call(item.value) ?? widget.selectedColor ?? theme.primaryColor;
 
     return InkWell(
       onTap: () => _handleItemSelection(item, !isSelected),
@@ -150,7 +150,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
 
   Widget _buildChipItem(MultiSelectorItem<T> item) {
     final isSelected = item.selected;
-    final color = widget.colorator?.call(item.value) ?? widget.selectedColor;
+    final color = widget.colorBuilder?.call(item.value) ?? widget.selectedColor;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
@@ -278,7 +278,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     if (!widget.showSelectAll) return const SizedBox();
 
     final allSelected = _items.every((item) => item.selected);
-    final buttonText = allSelected
+    final String buttonText = allSelected
         ? widget.deselectAllText ?? "Deselect All"
         : widget.selectAllText ?? "Select All";
 
@@ -318,7 +318,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
           minimumSize: const Size(double.infinity, 48),
         ),
         child: Text(
-          buttonText.toString(),
+          buttonText,
           style: TextStyle(
             color: allSelected
                 ? Theme.of(context).colorScheme.primary
@@ -388,9 +388,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
             ),
             child: DefaultTextStyle(
               style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withOpacity(0.7),
+                color: theme.colorScheme.onSurface.withAlpha(179),
               ) ??
-                  TextStyle(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                  TextStyle(color: theme.colorScheme.onSurface.withAlpha(179)),
               child: widget.cancelText ?? const Text("CANCEL"),
             ),
           ),
@@ -439,17 +439,20 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
           maxHeight: widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
           minWidth: 300.0,
         ),
-        child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(),
-            if (widget.showSelectAll) _buildSelectAllButton(),
-            Expanded(
-              child: isChipStyle ? _buildChipContent() : _buildListContent(),
-            ),
-            // Divider(height: 1, color: theme.dividerColor),
-            _buildActionButtons(),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0,left: 8, right: 8),
+          child: Column(
+            // crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(),
+              if (widget.showSelectAll) _buildSelectAllButton(),
+              Expanded(
+                child: isChipStyle ? _buildChipContent() : _buildListContent(),
+              ),
+              // Divider(height: 1, color: theme.dividerColor),
+              _buildActionButtons(),
+            ],
+          ),
         ),
       ),
     );

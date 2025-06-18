@@ -33,16 +33,16 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
   final _formKey = GlobalKey<FormState>();
 
   final List<String> animals = [
-    // "Dog",
-    // "Cat",
-    // "Elephant",
-    // "Tiger",
-    // "Lion",
-    // "Cow",
-    // "Horse",
-    // "Monkey",
-    // "Deer",
-    // "Rabbit",
+    "Dog",
+    "Cat",
+    "Elephant",
+    "Tiger",
+    "Lion",
+    "Cow",
+    "Horse",
+    "Monkey",
+    "Deer",
+    "Rabbit",
   ];
 
   List<String> _selectedNumbers = [];
@@ -64,8 +64,8 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              MultiSelectorDialogField(
-                items: animals.map((animal) => MultiSelectorItem( value: animal, label: animal)).toList(),
+              MultiSelectorDialogField<String>(
+                items: animals.map((animal) => MultiSelectorItem(value: animal, label: animal)).toList(),
                 initialValue: _selectedNumbers,
                 validator: (values) {
                   if (values == null || values.isEmpty) {
@@ -82,12 +82,37 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 },
                 searchable: true,
                 showSelectAll: true,
-                fieldShape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: const BorderSide(color: Colors.grey),
+                unselectedColor: Colors.white,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                  isDense: true,
                 ),
-              ),
-              const SizedBox(height: 30),
+                // Remove fieldShape since we're using InputDecoration
+                // fieldShape: RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.circular(8),
+                //   side: const BorderSide(color: Colors.grey),
+                // ),
+              ),              const SizedBox(height: 30),
 
               Center(
                 child: ElevatedButton(

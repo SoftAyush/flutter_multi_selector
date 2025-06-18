@@ -2,448 +2,290 @@ import 'package:collection/collection.dart' show IterableExtension;
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_selector/DialogBox/MultiSelectorDialog.dart';
 import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorListStyle.dart';
 
-/// A customizable InkWell widget that opens the MultiSelectDialog
-// ignore: must_be_immutable
 class MultiSelectorDialogField<V> extends FormField<List<V>> {
-  /// An enum that determines which type of list to render.
-  final MultiSelectorListStyle? listType;
-
-  /// Style the Container that makes up the field.
-  final BoxDecoration? decoration;
-
-  /// Set text that is displayed on the button.
-  final Text? buttonText;
-
-  /// Specify the button icon.
-  final Icon? buttonIcon;
-
-  /// The text at the top of the dialog.
-  final Widget? title;
-
-  /// List of items to select from.
   final List<MultiSelectorItem<V>> items;
-
-  /// Fires when the an item is selected / unselected.
-  final void Function(List<V>)? onSelectionChanged;
-
-  /// Overrides the default MultiSelectChipDisplay attached to this field.
-  /// If you want to remove it, use MultiSelectChipDisplay.none().
-  // final MultiSelectChipDisplay<V>? chipDisplay;
+  final ValueChanged<List<V>> onConfirm;
 
   /// The list of selected values before interaction.
   final List<V> initialValue;
 
-  /// Fires when confirm is tapped.
-  final void Function(List<V>) onConfirm;
-
-  /// Toggles search functionality.
-  final bool searchable;
-
-  /// Text on the confirm button.
-  final Text? confirmText;
-
-  /// Text on the cancel button.
-  final Text? cancelText;
-
-  /// Set the color of the space outside the BottomSheet.
-  final Color? barrierColor;
-
-  /// Sets the color of the checkbox or chip when it's selected.
+  final Widget? title;
+  final Text? buttonText;
+  final Icon? buttonIcon;
+  final InputDecoration? decoration;
+  final BoxDecoration? boxDecoration;
+  final bool isDense;
   final Color? selectedColor;
-
-  /// Sets a fixed height on the dialog.
-  final double? dialogHeight;
-
-  /// Sets a fixed width on the dialog.
-  final double? dialogWidth;
-
-  /// Set the placeholder text of the search field.
+  final bool searchable;
+  final Text? confirmText;
+  final Text? cancelText;
   final String? searchHint;
-
-  /// A function that sets the color of selected items based on their value.
-  /// It will either set the chip color, or the checkbox color depending on the list type.
-  final Color Function(V)? colorator;
-
-  /// Set the background color of the dialog.
-  final Color? backgroundColor;
-
-  /// Color of the chip body or checkbox border while not selected.
-  final Color? unselectedColor;
-
-  /// Replaces the default search icon when searchable is true.
-  final Icon? searchIcon;
-
-  /// Replaces the default close search icon when searchable is true.
-  final Icon? closeSearchIcon;
-
-  /// Style the text on the chips or list tiles.
-  final TextStyle? itemsTextStyle;
-
-  /// Style the text on the selected chips or list tiles.
-  final TextStyle? selectedItemsTextStyle;
-
-  /// Style the text that is typed into the search field.
-  final TextStyle? searchTextStyle;
-
-  /// Style the search hint.
-  final TextStyle? searchHintStyle;
-
-  /// Moves the selected items to the top of the list.
+  final Color Function(V)? colorBuilder;
   final bool separateSelectedItems;
-
-  /// Set the color of the check in the checkbox
-  final Color? checkColor;
-
-  /// Whether the user can dismiss the widget by tapping outside
-  final bool isDismissible;
-
-  /// Animation duration for dialog transitions
   final Duration animationDuration;
-
-  /// Border radius for the dialog
-  final BorderRadius? dialogBorderRadius;
-
-  /// Elevation for the dialog
-  final double dialogElevation;
-
-  /// Padding around the dialog content
-  final EdgeInsets? dialogPadding;
-
-  /// Whether to show a divider between items
-  final bool showItemsDivider;
-
-  /// Color of the divider between items
-  final Color? dividerColor;
-
-  /// Custom shape for the dialog
   final ShapeBorder? dialogShape;
-
-  /// Custom shape for the field
   final ShapeBorder? fieldShape;
-
-  /// Whether to show a clear all button
-  final bool showClearAll;
-
-  /// Text for the clear all button
-  final Text? clearAllText;
-
-  /// Icon for the clear all button
-  final Icon? clearAllIcon;
-
-  /// Callback when clear all is pressed
-  final VoidCallback? onClearAll;
-
-  /// Whether to show a select all button
-  final bool showSelectAll;
-
-  /// Text for the select all button
-  final Text? selectAllText;
-
-  /// Icon for the select all button
-  final Icon? selectAllIcon;
-
-  /// Callback when select all is pressed
-  final VoidCallback? onSelectAll;
-
-  /// Custom builder for the field button
   final Widget Function(BuildContext context)? buttonBuilder;
-
-  /// Custom builder for the dialog
   final Widget Function(BuildContext context, Widget child)? dialogBuilder;
-
-  final AutovalidateMode autovalidateMode;
-  final FormFieldValidator<List<V>>? validator;
-  final FormFieldSetter<List<V>>? onSaved;
-  final GlobalKey<FormFieldState>? key;
-  FormFieldState<List<V>>? state;
+  final bool showClearAll;
+  final Text? clearAllText;
+  final Icon? clearAllIcon;
+  final VoidCallback? onClearAll;
+  final bool showSelectAll;
+  final String? selectAllText;
+  final String? deselectAllText;
+  final Icon? selectAllIcon;
+  final VoidCallback? onSelectAll;
+  final double? dialogHeight;
+  final double? dialogWidth;
+  final Color? barrierColor;
+  final Color? backgroundColor;
+  final Color? unselectedColor;
+  final Color? checkColor;
+  final TextStyle? itemsTextStyle;
+  final TextStyle? selectedItemsTextStyle;
+  final TextStyle? searchTextStyle;
+  final TextStyle? searchHintStyle;
+  final Icon? searchIcon;
+  final Icon? closeSearchIcon;
+  final bool showItemsDivider;
+  final Color? dividerColor;
+  final BorderRadius? dialogBorderRadius;
+  final double dialogElevation;
+  final EdgeInsets? dialogPadding;
+  final ValueChanged<List<V>>? onSelectionChanged;
 
   MultiSelectorDialogField({
+    super.key,
     required this.items,
     required this.onConfirm,
     this.title,
     this.buttonText,
     this.buttonIcon,
-    this.listType,
     this.decoration,
-    this.onSelectionChanged,
-    // this.chipDisplay,
+    this.boxDecoration,
+    this.isDense = false,
+    this.selectedColor,
     this.searchable = false,
     this.confirmText,
     this.cancelText,
-    this.barrierColor,
-    this.selectedColor,
     this.searchHint,
-    this.dialogHeight,
-    this.dialogWidth,
-    this.colorator,
-    this.backgroundColor,
-    this.unselectedColor,
-    this.searchIcon,
-    this.closeSearchIcon,
-    this.itemsTextStyle,
-    this.searchTextStyle,
-    this.searchHintStyle,
-    this.selectedItemsTextStyle,
-    this.separateSelectedItems = false,
-    this.checkColor,
-    this.isDismissible = true,
-    this.onSaved,
-    this.validator,
+    this.colorBuilder,
     this.initialValue = const [],
-    this.autovalidateMode = AutovalidateMode.disabled,
-    this.key,
-    this.animationDuration = const Duration(milliseconds: 300),
-    this.dialogBorderRadius,
-    this.dialogElevation = 8.0,
-    this.dialogPadding,
-    this.showItemsDivider = false,
-    this.dividerColor,
+    this.separateSelectedItems = false,
+    this.animationDuration = const Duration(milliseconds: 200),
     this.dialogShape,
     this.fieldShape,
+    this.buttonBuilder,
+    this.dialogBuilder,
     this.showClearAll = false,
     this.clearAllText,
     this.clearAllIcon,
     this.onClearAll,
     this.showSelectAll = false,
     this.selectAllText,
+    this.deselectAllText,
     this.selectAllIcon,
     this.onSelectAll,
-    this.buttonBuilder,
-    this.dialogBuilder,
+    this.dialogHeight,
+    this.dialogWidth,
+    this.barrierColor,
+    this.backgroundColor,
+    this.unselectedColor,
+    this.checkColor,
+    this.itemsTextStyle,
+    this.selectedItemsTextStyle,
+    this.searchTextStyle,
+    this.searchHintStyle,
+    this.searchIcon,
+    this.closeSearchIcon,
+    this.showItemsDivider = false,
+    this.dividerColor,
+    this.dialogBorderRadius,
+    this.dialogElevation = 8.0,
+    this.dialogPadding,
+    this.onSelectionChanged,
+    super.onSaved,
+    super.validator,
+    AutovalidateMode super.autovalidateMode = AutovalidateMode.disabled,
   }) : super(
-         key: key,
-         onSaved: onSaved,
-         validator: validator,
-         autovalidateMode: autovalidateMode,
          initialValue: initialValue,
          builder: (FormFieldState<List<V>> state) {
-           _MultiSelectorDialogFieldView<V> field = _MultiSelectorDialogFieldView<V>(
-             title: title,
+           return _MultiSelectorDialogFieldView<V>(
+             state: state,
              items: items,
+             onConfirm: onConfirm,
+             title: title,
              buttonText: buttonText,
              buttonIcon: buttonIcon,
-             // chipDisplay: chipDisplay,
              decoration: decoration,
-             listType: listType,
-             onConfirm: onConfirm,
-             onSelectionChanged: onSelectionChanged,
+             boxDecoration: boxDecoration,
+             isDense: isDense,
              initialValue: initialValue,
+             selectedColor: selectedColor,
              searchable: searchable,
              confirmText: confirmText,
              cancelText: cancelText,
-             barrierColor: barrierColor,
-             selectedColor: selectedColor,
              searchHint: searchHint,
-             dialogHeight: dialogHeight,
-             dialogWidth: dialogWidth,
-             colorator: colorator,
-             backgroundColor: backgroundColor,
-             unselectedColor: unselectedColor,
-             searchIcon: searchIcon,
-             closeSearchIcon: closeSearchIcon,
-             itemsTextStyle: itemsTextStyle,
-             searchTextStyle: searchTextStyle,
-             searchHintStyle: searchHintStyle,
-             selectedItemsTextStyle: selectedItemsTextStyle,
+             colorBuilder: colorBuilder,
              separateSelectedItems: separateSelectedItems,
-             checkColor: checkColor,
-             isDismissible: isDismissible,
              animationDuration: animationDuration,
-             dialogBorderRadius: dialogBorderRadius,
-             dialogElevation: dialogElevation,
-             dialogPadding: dialogPadding,
-             showItemsDivider: showItemsDivider,
-             dividerColor: dividerColor,
              dialogShape: dialogShape,
              fieldShape: fieldShape,
+             buttonBuilder: buttonBuilder,
+             dialogBuilder: dialogBuilder,
              showClearAll: showClearAll,
              clearAllText: clearAllText,
              clearAllIcon: clearAllIcon,
              onClearAll: onClearAll,
              showSelectAll: showSelectAll,
              selectAllText: selectAllText,
+             deselectAllText: deselectAllText,
              selectAllIcon: selectAllIcon,
              onSelectAll: onSelectAll,
-             buttonBuilder: buttonBuilder,
-             dialogBuilder: dialogBuilder,
+             dialogHeight: dialogHeight,
+             dialogWidth: dialogWidth,
+             barrierColor: barrierColor,
+             backgroundColor: backgroundColor,
+             unselectedColor: unselectedColor,
+             checkColor: checkColor,
+             itemsTextStyle: itemsTextStyle,
+             selectedItemsTextStyle: selectedItemsTextStyle,
+             searchTextStyle: searchTextStyle,
+             searchHintStyle: searchHintStyle,
+             searchIcon: searchIcon,
+             closeSearchIcon: closeSearchIcon,
+             showItemsDivider: showItemsDivider,
+             dividerColor: dividerColor,
+             dialogBorderRadius: dialogBorderRadius,
+             dialogElevation: dialogElevation,
+             dialogPadding: dialogPadding,
+             onSelectionChanged: onSelectionChanged,
            );
-           return _MultiSelectorDialogFieldView<V>._withState(field, state);
          },
        );
 }
 
-// ignore: must_be_immutable
 class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
-  final MultiSelectorListStyle? listType;
-  final BoxDecoration? decoration;
+  final FormFieldState<List<V>> state;
+  final List<MultiSelectorItem<V>> items;
+  final ValueChanged<List<V>> onConfirm;
+  final List<V> initialValue;
+
+  final Widget? title;
   final Text? buttonText;
   final Icon? buttonIcon;
-  final Widget? title;
-  final List<MultiSelectorItem<V>> items;
-  final void Function(List<V>)? onSelectionChanged;
-
-  // final MultiSelectChipDisplay<V>? chipDisplay;
-  final List<V> initialValue;
-  final void Function(List<V>)? onConfirm;
-  final bool? searchable;
+  final InputDecoration? decoration;
+  final BoxDecoration? boxDecoration;
+  final bool isDense;
+  final Color? selectedColor;
+  final bool searchable;
   final Text? confirmText;
   final Text? cancelText;
-  final Color? barrierColor;
-  final Color? selectedColor;
-  final double? dialogHeight;
-  final double? dialogWidth;
   final String? searchHint;
-  final Color Function(V)? colorator;
-  final Color? backgroundColor;
-  final Color? unselectedColor;
-  final Icon? searchIcon;
-  final Icon? closeSearchIcon;
-  final TextStyle? itemsTextStyle;
-  final TextStyle? selectedItemsTextStyle;
-  final TextStyle? searchTextStyle;
-  final TextStyle? searchHintStyle;
+  final Color Function(V)? colorBuilder;
   final bool separateSelectedItems;
-  final Color? checkColor;
-  final bool isDismissible;
   final Duration animationDuration;
-  final BorderRadius? dialogBorderRadius;
-  final double dialogElevation;
-  final EdgeInsets? dialogPadding;
-  final bool showItemsDivider;
-  final Color? dividerColor;
   final ShapeBorder? dialogShape;
   final ShapeBorder? fieldShape;
+  final Widget Function(BuildContext context)? buttonBuilder;
+  final Widget Function(BuildContext context, Widget child)? dialogBuilder;
   final bool showClearAll;
   final Text? clearAllText;
   final Icon? clearAllIcon;
   final VoidCallback? onClearAll;
   final bool showSelectAll;
-  final Text? selectAllText;
+  final String? selectAllText;
+  final String? deselectAllText;
   final Icon? selectAllIcon;
   final VoidCallback? onSelectAll;
-  final Widget Function(BuildContext context)? buttonBuilder;
-  final Widget Function(BuildContext context, Widget child)? dialogBuilder;
-  FormFieldState<List<V>>? state;
+  final double? dialogHeight;
+  final double? dialogWidth;
+  final Color? barrierColor;
+  final Color? backgroundColor;
+  final Color? unselectedColor;
+  final Color? checkColor;
+  final TextStyle? itemsTextStyle;
+  final TextStyle? selectedItemsTextStyle;
+  final TextStyle? searchTextStyle;
+  final TextStyle? searchHintStyle;
+  final Icon? searchIcon;
+  final Icon? closeSearchIcon;
+  final bool showItemsDivider;
+  final Color? dividerColor;
+  final BorderRadius? dialogBorderRadius;
+  final double dialogElevation;
+  final EdgeInsets? dialogPadding;
+  final ValueChanged<List<V>>? onSelectionChanged;
 
-  _MultiSelectorDialogFieldView({
+  const _MultiSelectorDialogFieldView({
+    required this.state,
     required this.items,
+    required this.onConfirm,
+    this.initialValue = const [],
     this.title,
     this.buttonText,
     this.buttonIcon,
-    this.listType,
     this.decoration,
-    this.onSelectionChanged,
-    this.onConfirm,
-    // this.chipDisplay,
-    this.initialValue = const [],
-    this.searchable,
+    this.boxDecoration,
+    this.isDense = false,
+    this.selectedColor,
+    this.searchable = false,
     this.confirmText,
     this.cancelText,
-    this.barrierColor,
-    this.selectedColor,
     this.searchHint,
-    this.dialogHeight,
-    this.dialogWidth,
-    this.colorator,
-    this.backgroundColor,
-    this.unselectedColor,
-    this.searchIcon,
-    this.closeSearchIcon,
-    this.itemsTextStyle,
-    this.searchTextStyle,
-    this.searchHintStyle,
-    this.selectedItemsTextStyle,
+    this.colorBuilder,
     this.separateSelectedItems = false,
-    this.checkColor,
-    required this.isDismissible,
-    this.animationDuration = const Duration(milliseconds: 300),
-    this.dialogBorderRadius,
-    this.dialogElevation = 8.0,
-    this.dialogPadding,
-    this.showItemsDivider = false,
-    this.dividerColor,
+    this.animationDuration = const Duration(milliseconds: 200),
     this.dialogShape,
     this.fieldShape,
+    this.buttonBuilder,
+    this.dialogBuilder,
     this.showClearAll = false,
     this.clearAllText,
     this.clearAllIcon,
     this.onClearAll,
     this.showSelectAll = false,
     this.selectAllText,
+    this.deselectAllText,
     this.selectAllIcon,
     this.onSelectAll,
-    this.buttonBuilder,
-    this.dialogBuilder,
+    this.dialogHeight,
+    this.dialogWidth,
+    this.barrierColor,
+    this.backgroundColor,
+    this.unselectedColor,
+    this.checkColor,
+    this.itemsTextStyle,
+    this.selectedItemsTextStyle,
+    this.searchTextStyle,
+    this.searchHintStyle,
+    this.searchIcon,
+    this.closeSearchIcon,
+    this.showItemsDivider = false,
+    this.dividerColor,
+    this.dialogBorderRadius,
+    this.dialogElevation = 8.0,
+    this.dialogPadding,
+    this.onSelectionChanged,
   });
 
-  /// This constructor allows a FormFieldState to be passed in. Called by MultiSelectDialogField.
-  _MultiSelectorDialogFieldView._withState(
-    _MultiSelectorDialogFieldView<V> field,
-    FormFieldState<List<V>> state,
-  ) : items = field.items,
-      title = field.title,
-      buttonText = field.buttonText,
-      buttonIcon = field.buttonIcon,
-      listType = field.listType,
-      decoration = field.decoration,
-      onSelectionChanged = field.onSelectionChanged,
-      onConfirm = field.onConfirm,
-      // chipDisplay = field.chipDisplay,
-      initialValue = field.initialValue,
-      searchable = field.searchable,
-      confirmText = field.confirmText,
-      cancelText = field.cancelText,
-      barrierColor = field.barrierColor,
-      selectedColor = field.selectedColor,
-      dialogHeight = field.dialogHeight,
-      dialogWidth = field.dialogWidth,
-      searchHint = field.searchHint,
-      colorator = field.colorator,
-      backgroundColor = field.backgroundColor,
-      unselectedColor = field.unselectedColor,
-      searchIcon = field.searchIcon,
-      closeSearchIcon = field.closeSearchIcon,
-      itemsTextStyle = field.itemsTextStyle,
-      searchHintStyle = field.searchHintStyle,
-      searchTextStyle = field.searchTextStyle,
-      selectedItemsTextStyle = field.selectedItemsTextStyle,
-      separateSelectedItems = field.separateSelectedItems,
-      checkColor = field.checkColor,
-      isDismissible = field.isDismissible,
-      animationDuration = field.animationDuration,
-      dialogBorderRadius = field.dialogBorderRadius,
-      dialogElevation = field.dialogElevation,
-      dialogPadding = field.dialogPadding,
-      showItemsDivider = field.showItemsDivider,
-      dividerColor = field.dividerColor,
-      dialogShape = field.dialogShape,
-      fieldShape = field.fieldShape,
-      showClearAll = field.showClearAll,
-      clearAllText = field.clearAllText,
-      clearAllIcon = field.clearAllIcon,
-      onClearAll = field.onClearAll,
-      showSelectAll = field.showSelectAll,
-      selectAllText = field.selectAllText,
-      selectAllIcon = field.selectAllIcon,
-      onSelectAll = field.onSelectAll,
-      buttonBuilder = field.buttonBuilder,
-      dialogBuilder = field.dialogBuilder,
-      state = state;
-
   @override
-  __MultiSelectDialogFieldViewState createState() => __MultiSelectDialogFieldViewState<V>();
+  _MultiSelectorDialogFieldViewState<V> createState() => _MultiSelectorDialogFieldViewState<V>();
 }
 
-class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFieldView<V>> {
+class _MultiSelectorDialogFieldViewState<V> extends State<_MultiSelectorDialogFieldView<V>> {
   List<V> _selectedItems = [];
 
   @override
   void initState() {
     super.initState();
     _selectedItems.addAll(widget.initialValue);
+
+    _selectedItems.addAll(widget.state.value ?? []);
   }
+
 
   @override
   void didUpdateWidget(_MultiSelectorDialogFieldView<V> oldWidget) {
@@ -454,102 +296,137 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
       _selectedItems.addAll(widget.initialValue);
 
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.state!.didChange(_selectedItems);
+        widget.state.didChange(_selectedItems);
       });
     }
   }
 
-  Widget _buildInheritedChipDisplay() {
-    // Get the valid selected items by matching with available options
-    List<MultiSelectorItem<V>> chipDisplayItems = _selectedItems
-        .map((e) => widget.items.firstWhereOrNull((element) => e == element.value))
-        .whereType<MultiSelectorItem<V>>()
-        .toList();
+  Widget _buildChips() {
+    final validItems =
+        _selectedItems
+            .map((e) => widget.items.firstWhereOrNull((item) => item.value == e))
+            .whereType<MultiSelectorItem<V>>()
+            .toList();
 
-    // If no selected items, return empty container
-    if (chipDisplayItems.isEmpty) {
-      return SizedBox.shrink();
-    }
+    if (validItems.isEmpty) return const SizedBox.shrink();
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+    return Padding(
+      padding: const EdgeInsets.only(top: 4.0),
       child: Wrap(
-        spacing: 4.0, // Horizontal space between chips
-        runSpacing: 4.0, // Vertical space between chip rows
-        children: chipDisplayItems.map((item) {
-          final Color chipColor = widget.colorator != null
-              ? widget.colorator!(item.value)
-              : widget.selectedColor ?? Theme.of(context).primaryColor;
+        spacing: 4.0,
+        runSpacing: 4.0,
+        children:
+            validItems.map((item) {
+              final color =
+                  widget.colorBuilder?.call(item.value) ??
+                  widget.selectedColor ??
+                  Theme.of(context).primaryColor;
 
-          return Chip(
-            label: Text(
-              item.label,
-              style:
-                  widget.selectedItemsTextStyle ??
-                  TextStyle(color: chipColor.withAlpha(255) ?? Colors.black),
-            ),
-            backgroundColor: chipColor.withAlpha(51),
-            side: BorderSide(color: chipColor ?? Colors.grey, width: 1.0),
-            deleteIcon: Icon(Icons.close, size: 18, color: chipColor.withAlpha(204)),
-            onDeleted: () {
-              setState(() {
-                _selectedItems.remove(item.value);
-              });
-              if (widget.state != null) {
-                widget.state!.didChange(_selectedItems);
-              }
-              if (widget.onConfirm != null) {
-                widget.onConfirm!(_selectedItems);
-              }
-              if (widget.onSelectionChanged != null) {
-                widget.onSelectionChanged!(_selectedItems);
-              }
-            },
-            shape:
-                widget.fieldShape as OutlinedBorder? ??
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
-            visualDensity: VisualDensity.compact,
-          );
-        }).toList(),
+              return Chip(
+                label: Text(
+                  item.label,
+                  style:
+                      widget.selectedItemsTextStyle?.copyWith(color: color) ??
+                      TextStyle(color: color),
+                ),
+                backgroundColor: color.withAlpha(13),
+                side: BorderSide(color: color),
+                deleteIcon: Icon(Icons.close, size: 16, color: color),
+                onDeleted: () => _updateSelection(_selectedItems..remove(item.value)),
+                shape:
+                    widget.fieldShape as OutlinedBorder? ??
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                visualDensity: VisualDensity.compact,
+              );
+            }).toList(),
       ),
     );
   }
 
-  Widget _buildDefaultButton(BuildContext context) {
+  void _updateSelection(List<V> newSelection) {
+    setState(() => _selectedItems = newSelection);
+    widget.state.didChange(_selectedItems);
+    widget.onConfirm(_selectedItems);
+    widget.onSelectionChanged?.call(_selectedItems);
+  }
+
+  Widget _buildFieldButton(BuildContext context) {
+    final theme = Theme.of(context);
+    final hasError = widget.state.hasError;
+    final isDense = widget.isDense;
+
+    if (widget.buttonBuilder != null) {
+      return widget.buttonBuilder!(context);
+    }
+
+    if (widget.decoration != null) {
+      return InputDecorator(
+        decoration: widget.decoration!.copyWith(
+          errorText: hasError ? widget.state.errorText : null,
+          errorStyle:
+              hasError ? theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.error) : null,
+          contentPadding:
+              isDense ? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0) : null,
+          isDense: isDense,
+          suffixIcon: widget.buttonIcon ?? const Icon(Icons.arrow_drop_down),
+        ),
+        isEmpty: _selectedItems.isEmpty,
+        child: InkWell(
+          onTap: () => _showDialog(context),
+          child: Text(
+            widget.buttonText?.data ?? 'Select',
+            style: widget.decoration?.hintStyle ?? theme.textTheme.bodyMedium,
+          ),
+        ),
+      );
+    }
+
+    final borderColor =
+        hasError
+            ? theme.colorScheme.error
+            : _selectedItems.isNotEmpty
+            ? widget.selectedColor ?? theme.primaryColor
+            : theme.dividerColor;
+
+    final borderWidth =
+        hasError
+            ? 1.5
+            : _selectedItems.isNotEmpty
+            ? 1.25
+            : 1.0;
+
     return Material(
       shape:
           widget.fieldShape ??
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(
-              color: widget.state != null && widget.state!.hasError
-                  ? Theme.of(context).colorScheme.error
-                  : _selectedItems.isNotEmpty
-                  ? (widget.selectedColor != null && widget.selectedColor != Colors.transparent)
-                        ? widget.selectedColor!
-                        : Theme.of(context).primaryColor
-                  : Theme.of(context).dividerColor,
-              width: _selectedItems.isNotEmpty
-                  ? (widget.state != null && widget.state!.hasError)
-                        ? 1.4
-                        : 1.8
-                  : 1.2,
-            ),
+            side: BorderSide(color: borderColor, width: borderWidth),
           ),
-      color: Theme.of(context).cardColor,
-      elevation: 1,
+      color: theme.cardColor,
       child: InkWell(
         borderRadius: widget.fieldShape == null ? BorderRadius.circular(8) : null,
         onTap: () => _showDialog(context),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          padding:
+              isDense
+                  ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
+                  : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
+            children: [
               widget.buttonText ??
-                  Text('Select Number', style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    'Select',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: hasError ? theme.colorScheme.error : null,
+                    ),
+                  ),
               widget.buttonIcon ??
-                  Icon(Icons.arrow_drop_down, color: Theme.of(context).iconTheme.color),
+                  Icon(
+                    Icons.arrow_drop_down,
+                    color: hasError ? theme.colorScheme.error : theme.iconTheme.color,
+                    size: isDense ? 20 : 24,
+                  ),
             ],
           ),
         ),
@@ -557,11 +434,13 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
     );
   }
 
+
+
   /// Calls showDialog() and renders a MultiSelectDialog.
   Future<void> _showDialog(BuildContext ctx) async {
     await showDialog(
       barrierColor: widget.barrierColor ?? Colors.black54,
-      barrierDismissible: widget.isDismissible,
+      // barrierDismissible: widget.isDismissible,
       context: context,
       builder: (ctx) {
         final dialog = MultiSelectorDialog<V>(
@@ -574,7 +453,7 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
           closeSearchIcon: widget.closeSearchIcon,
           unselectedColor: widget.unselectedColor,
           backgroundColor: widget.backgroundColor,
-          colorator: widget.colorator,
+          colorBuilder: widget.colorBuilder,
           searchHint: widget.searchHint,
           selectedColor: widget.selectedColor,
           // onSelectionChanged: widget.onSelectionChanged,
@@ -582,7 +461,15 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
           width: widget.dialogWidth,
           // listType: widget.listType,
           items: widget.items,
-          title: widget.title ?? const Text("Select"),
+          title: widget.title ??  Text(
+            "Select an Item",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+          )
+          ,
           initialValue: _selectedItems,
           searchable: widget.searchable ?? false,
           confirmText: widget.confirmText,
@@ -609,6 +496,8 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
           // },
           showSelectAll: widget.showSelectAll,
           selectAllText: widget.selectAllText,
+           deselectAllText: widget.selectAllText,
+
           // selectAllIcon: widget.selectAllIcon,
           // onSelectAll: () {
           //   setState(() {
@@ -621,25 +510,23 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
           // },
           onConfirm: (selected) {
             _selectedItems = selected;
-            if (widget.state != null) {
-              widget.state!.didChange(_selectedItems);
-            }
-            if (widget.onConfirm != null) widget.onConfirm!(_selectedItems);
+            widget.state.didChange(_selectedItems);
+            widget.onConfirm(_selectedItems);
           },
         );
 
         return widget.dialogBuilder != null
             ? widget.dialogBuilder!(context, dialog)
             : Dialog(
-                shape:
-                    widget.dialogShape ??
-                    RoundedRectangleBorder(
-                      borderRadius: widget.dialogBorderRadius ?? BorderRadius.circular(12),
-                    ),
-                elevation: widget.dialogElevation,
-                backgroundColor: widget.backgroundColor,
-                child: dialog,
-              );
+              shape:
+                  widget.dialogShape ??
+                  RoundedRectangleBorder(
+                    borderRadius: widget.dialogBorderRadius ?? BorderRadius.circular(12),
+                  ),
+              elevation: widget.dialogElevation,
+              backgroundColor: widget.backgroundColor,
+              child: dialog,
+            );
       },
     );
   }
@@ -648,24 +535,8 @@ class __MultiSelectDialogFieldViewState<V> extends State<_MultiSelectorDialogFie
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        widget.buttonBuilder != null
-            ? widget.buttonBuilder!(context)
-            : _buildDefaultButton(context),
-        if (_selectedItems.isNotEmpty) ...[const SizedBox(height: 8), _buildInheritedChipDisplay()],
-        if (widget.state != null && widget.state!.hasError) ...[
-          const SizedBox(height: 4),
-          Padding(
-            padding: const EdgeInsets.only(left: 12),
-            child: Text(
-              widget.state!.errorText!,
-              style: Theme.of(
-                context,
-              ).textTheme.labelSmall?.copyWith(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
-      ],
+      mainAxisSize: MainAxisSize.min,
+      children: [_buildFieldButton(context), _buildChips()],
     );
   }
 }
