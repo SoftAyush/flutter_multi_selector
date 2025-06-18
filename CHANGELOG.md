@@ -1,12 +1,12 @@
-## [0.0.2] 
+### [0.0.3] 
+## Changed
+- add MIT License
 
-### Changed
-
+### [0.0.2] 
+## Changed
 - update changelog
 
-## [0.0.1] 
-
-### Added
-
+### [0.0.1] 
+## Added
 - Creation of flutter_Multi_Selector package.
 

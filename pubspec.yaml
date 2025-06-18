@@ -1,12 +1,12 @@
 name: flutter_multi_selector
 description: "A flexible multi selector package for Flutter"
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/SoftAyush/flutter_multi_selector
 repository: https://github.com/SoftAyush/flutter_multi_selector
 
 environment:
-  sdk: ^3.8.1
-  flutter: ">=1.17.0"
+  sdk: ^3.7.0
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:

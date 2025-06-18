@@ -306,7 +306,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         },
         style: OutlinedButton.styleFrom(
           backgroundColor: allSelected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
+              ? Theme.of(context).colorScheme.primary.withAlpha(13)
               : null,
           side: BorderSide(
             color: Theme.of(context).colorScheme.primary,
