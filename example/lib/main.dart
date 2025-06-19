@@ -47,7 +47,6 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
 
   List<String> _selectedNumbers = [];
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,7 +64,9 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
               ),
               const SizedBox(height: 8),
               MultiSelectorDialogField<String>(
-                items: animals.map((animal) => MultiSelectorItem(value: animal, label: animal)).toList(),
+                items: animals
+                    .map((animal) => MultiSelectorItem(value: animal, label: animal))
+                    .toList(),
                 initialValue: _selectedNumbers,
                 validator: (values) {
                   if (values == null || values.isEmpty) {
@@ -106,13 +107,16 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                   ),
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   isDense: true,
+                  errorStyle: TextStyle(fontSize: 0)
                 ),
                 // Remove fieldShape since we're using InputDecoration
                 // fieldShape: RoundedRectangleBorder(
                 //   borderRadius: BorderRadius.circular(8),
                 //   side: const BorderSide(color: Colors.grey),
                 // ),
-              ),              const SizedBox(height: 30),
+              ),
+              Divider(),
+              const SizedBox(height: 30),
 
               Center(
                 child: ElevatedButton(
@@ -122,13 +126,9 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                   ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "Selected Animal: $_selectedNumbers",
-                          ),
-                        ),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text("Selected Animal: $_selectedNumbers")));
                     }
                   },
                   child: const Text("Submit Form"),

@@ -2,39 +2,149 @@ import 'package:flutter/material.dart';
 import 'package:flutter_multi_selector/Utils/MultiSelectorActions.dart';
 import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
 
+/// A customizable dialog widget for selecting multiple items with various display options.
+///
+/// This widget provides:
+/// - Checkbox or chip-based selection modes
+/// - Built-in search functionality
+/// - Select All/Deselect All options
+/// - Customizable appearance and behavior
+///
+/// ## Basic Usage
+/// ```dart
+/// MultiSelectorDialog<String>(
+///   items: [MultiSelectorItem("1", "Option 1")],
+///   initialValue: ["1"],
+///   onConfirm: (values) => print(values),
+/// )
+/// ```
+///
+/// {@tool snippet}
+/// Example with chips and search:
+/// ```dart
+/// MultiSelectorDialog(
+///   items: items,
+///   initialValue: selectedValues,
+///   useChipsForSelection: true,
+///   searchable: true,
+/// )
+/// ```
+/// {@end-tool}
+///
+/// See also:
+/// - [MultiSelectorItem] for individual item configuration
+/// - [MultiSelectorActions] for the underlying selection logic
 class MultiSelectorDialog<T> extends StatefulWidget {
+  /// The list of items available for selection
+  ///
+  /// Each item must be a [MultiSelectorItem] containing:
+  /// - A value of type [T]
+  /// - A display label
   final List<MultiSelectorItem<T>> items;
+
+  /// The initially selected values (must match values in [items])
   final List<T> initialValue;
+
+  /// Optional title widget displayed at the top of the dialog
   final Widget? title;
+
+  /// Callback invoked when selection is confirmed
+  ///
+  /// Receives the list of selected values
   final void Function(List<T>)? onConfirm;
+
+  /// Whether to enable search functionality (defaults to false)
   final bool searchable;
+
+  /// Custom text for the confirm button
+  ///
+  /// Defaults to "CONFIRM" if null
   final Text? confirmText;
+
+  /// Custom text for the cancel button
+  ///
+  /// Defaults to "CANCEL" if null
   final Text? cancelText;
+
+  /// The color used for selected items (defaults to theme primary color)
   final Color? selectedColor;
+
+  /// The height of the dialog content area
   final double? height;
+
+  /// The width of the dialog content area
   final double? width;
+
+  /// Hint text displayed in the search field
   final String? searchHint;
+
+  /// Optional builder for custom per-item colors
+  ///
+  /// Overrides [selectedColor] when specified
   final Color? Function(T)? colorBuilder;
+
+  /// Background color of the dialog
   final Color? backgroundColor;
+
+  /// Color for unselected items (defaults to theme unselected color)
   final Color? unselectedColor;
+
+  /// Custom icon for the search button
   final Icon? searchIcon;
+
+  /// Custom icon for closing search
   final Icon? closeSearchIcon;
+
+  /// Text style for unselected items
   final TextStyle? itemsTextStyle;
+
+  /// Text style for selected items
   final TextStyle? selectedItemsTextStyle;
+
+  /// Text style for search input text
   final TextStyle? searchTextStyle;
+
+  /// Text style for search hint text
   final TextStyle? searchHintStyle;
+
+  /// Whether to group selected items separately (defaults to false)
   final bool separateSelectedItems;
+
+  /// Color of the checkbox checkmark
   final Color? checkColor;
+
+  /// Elevation of the dialog (defaults to 8)
   final double? elevation;
+
+  /// Custom shape for the dialog
   final ShapeBorder? shape;
+
+  /// Padding around the dialog content
   final EdgeInsets? contentPadding;
+
+  /// Whether to show Select All/Deselect All button (defaults to false)
   final bool showSelectAll;
+
+  /// Text for the Select All button
+  ///
+  /// Defaults to "Select All" if null
   final String? selectAllText;
+
+  /// Text for the Deselect All button
+  ///
+  /// Defaults to "Deselect All" if null
   final String? deselectAllText;
+
+  /// Whether to use chips instead of checkboxes (defaults to false)
   final bool useChipsForSelection;
+
+  /// Custom width for the dialog
   final double? dialogWidth;
+
+  /// Custom height for the dialog
   final double? dialogHeight;
 
+  /// Creates a multi-selection dialog
   const MultiSelectorDialog({
     super.key,
     required this.items,
@@ -74,6 +184,7 @@ class MultiSelectorDialog<T> extends StatefulWidget {
   State<MultiSelectorDialog<T>> createState() => _MultiSelectorDialogState<T>();
 }
 
+/// The state class for [MultiSelectorDialog]
 class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with MultiSelectorActions<T> {
   late List<T> _selectedValues;
   bool _showSearch = false;
@@ -89,6 +200,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     _initializeItems();
   }
 
+  /// Initializes item selection states and applies separation if enabled
   void _initializeItems() {
     for (final item in _items) {
       item.selected = _selectedValues.contains(item.value);
@@ -106,6 +218,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     super.dispose();
   }
 
+  /// Builds a list item with checkbox selection
   Widget _buildListItem(MultiSelectorItem<T> item) {
     final theme = Theme.of(context);
     final isSelected = item.selected;
@@ -148,6 +261,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Builds a chip-style selectable item
   Widget _buildChipItem(MultiSelectorItem<T> item) {
     final isSelected = item.selected;
     final color = widget.colorBuilder?.call(item.value) ?? widget.selectedColor;
@@ -173,6 +287,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Handles item selection changes
   void _handleItemSelection(MultiSelectorItem<T> item, bool checked) {
     setState(() {
       item.selected = checked;
@@ -184,6 +299,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     });
   }
 
+  /// Builds the search input field
   Widget _buildSearchField() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
@@ -218,6 +334,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Updates the item list based on search query
   void _updateSearchQuery(String query) {
     setState(() {
       _items = updateSearchQuery(query, widget.items);
@@ -227,6 +344,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     });
   }
 
+  /// Builds the dialog header (title + search toggle)
   Widget _buildHeader() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
@@ -241,9 +359,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
                 if (widget.title != null)
                   Flexible(
                     child: DefaultTextStyle(
-                        style: Theme.of(context).textTheme.titleLarge ??
-                            const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                        child: widget.title!,
+                      style: Theme.of(context).textTheme.titleLarge ??
+                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      child: widget.title!,
                     ),
                   ),
                 if (widget.searchable)
@@ -274,6 +392,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Builds the Select All/Deselect All button
   Widget _buildSelectAllButton() {
     if (!widget.showSelectAll) return const SizedBox();
 
@@ -330,6 +449,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Builds the scrollable list content (checkbox mode)
   Widget _buildListContent() {
     if (_items.isEmpty) {
       return Center(
@@ -350,6 +470,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Builds the scrollable chip content (chip mode)
   Widget _buildChipContent() {
     if (_items.isEmpty) {
       return Center(
@@ -373,6 +494,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     );
   }
 
+  /// Builds the action buttons (cancel/confirm)
   Widget _buildActionButtons() {
     final theme = Theme.of(context);
 
@@ -442,14 +564,12 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         child: Padding(
           padding: const EdgeInsets.only(top: 16.0,left: 8, right: 8),
           child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeader(),
               if (widget.showSelectAll) _buildSelectAllButton(),
               Expanded(
                 child: isChipStyle ? _buildChipContent() : _buildListContent(),
               ),
-              // Divider(height: 1, color: theme.dividerColor),
               _buildActionButtons(),
             ],
           ),

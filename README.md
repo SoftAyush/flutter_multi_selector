@@ -9,22 +9,19 @@ includes built-in accessibility for screen readers. With flexible callbacks and 
 management, it integrates effortlessly into any app, making it perfect for complex filtering,
 preference selection, or multi-choice forms while maintaining a polished, user-friendly interface.
 
-### Disclaimer
+## Disclaimer
 
 The `flutter_multi_selector` package only supports:
-
 Dart SDK: `^3.7.0` (minimum required)
-
 Flutter SDK: `>=3.27.0` (stable channel recommended)
-
-This ensures compatibility with the latest Flutter features, performance improvements, and null safety.
-
+This ensures compatibility with the latest Flutter features, performance improvements, and null
+safety.
 ⚠ Older versions of Flutter/Dart are not supported.
 📌 Upgrade your environment if needed to avoid conflicts.
+For Flutter versions below 3.27.0, consider checking for legacy alternatives or updating your
+project.
 
-For Flutter versions below 3.27.0, consider checking for legacy alternatives or updating your project.
-
-(Package maintained for modern Flutter ecosystems only.)
+( Note: Package maintained for modern Flutter ecosystems only.)
 
 ## Features
 
@@ -34,8 +31,6 @@ For Flutter versions below 3.27.0, consider checking for legacy alternatives or 
 - Select All / Deselect All functionality
 - Initial value support for pre-selected items
 - Customizable button text and field styling
-
-## Usage
 
 ### MultiSelectorDialogField
 

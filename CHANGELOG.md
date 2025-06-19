@@ -1,3 +1,18 @@
+## [1.0.1] -  2025-06-19
+
+### Fixed
+- Duplicate values in MultiSelect: Resolved an issue where selected items appeared multiple times
+- Spacing issue: Fixed unwanted additional spacing below the MultiSelect widget
+- State initialization: Improved handling of `initialValue` and `state.value` to prevent conflicts
+
+### Changed
+- Optimized internal item selection logic to prevent duplicates
+- Adjusted widget padding and layout constraints
+
+### Notes
+- Backward compatible with v1.0.0
+- No migration steps required
+
 ## [1.0.0] - 2025-06-18
 
 ### ⚠️ Breaking Changes
