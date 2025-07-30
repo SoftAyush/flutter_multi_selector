@@ -3,6 +3,8 @@ description: "A customizable Flutter multi-selection dialog with search, chips/c
 version: 1.0.2
 homepage: https://github.com/SoftAyush/flutter_multi_selector
 repository: https://github.com/SoftAyush/flutter_multi_selector
+issue_tracker: https://github.com/SoftAyush/flutter_multi_selector/issues
+documentation: https://github.com/SoftAyush/flutter_multi_selector#readme
 
 environment:
   sdk: ^3.7.0
