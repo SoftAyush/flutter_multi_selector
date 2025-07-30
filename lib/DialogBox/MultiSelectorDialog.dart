@@ -69,12 +69,6 @@ class MultiSelectorDialog<T> extends StatefulWidget {
   /// The color used for selected items (defaults to theme primary color)
   final Color? selectedColor;
 
-  /// The height of the dialog content area
-  final double? height;
-
-  /// The width of the dialog content area
-  final double? width;
-
   /// Hint text displayed in the search field
   final String? searchHint;
 
@@ -155,8 +149,6 @@ class MultiSelectorDialog<T> extends StatefulWidget {
     this.confirmText,
     this.cancelText,
     this.selectedColor,
-    this.height,
-    this.width,
     this.searchHint,
     this.colorBuilder,
     this.backgroundColor,
@@ -559,7 +551,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         constraints: BoxConstraints(
           maxWidth: widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
           maxHeight: widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
-          minWidth: 300.0,
+          minWidth: widget.dialogWidth ?? 300.0,
         ),
         child: Padding(
           padding: const EdgeInsets.only(top: 16.0,left: 8, right: 8),
