@@ -64,6 +64,9 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
               ),
               const SizedBox(height: 8),
               MultiSelectorDialogField<String>(
+                dialogWidth: 150,
+                dialogHeight: 150,
+
                 items: animals
                     .map((animal) => MultiSelectorItem(value: animal, label: animal))
                     .toList(),

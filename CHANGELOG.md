@@ -1,3 +1,19 @@
+## [1.0.3] -  2025-08-1
+
+### Fixes
+- when selected then auto back bug fix
+- Enhance and optimized the code
+
+## [1.0.2] -  2025-08-1
+
+### Fixes
+- Fixed dialog constraints: Resolved BoxConstraints normalization error by ensuring minWidth ≤ maxWidth
+- Dialog dimensions: Corrected dialogHeight and dialogWidth parameter handling
+- Padding: Fixed dialogPadding not being properly applied to dialog content
+- Elevation: Ensured dialogElevation is correctly passed to the Dialog widget
+- State management: Improved handling of initialValue updates
+
+
 ## [1.0.1] -  2025-06-19
 
 ### Fixed

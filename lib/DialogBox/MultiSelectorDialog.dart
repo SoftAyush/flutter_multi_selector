@@ -69,12 +69,6 @@ class MultiSelectorDialog<T> extends StatefulWidget {
   /// The color used for selected items (defaults to theme primary color)
   final Color? selectedColor;
 
-  /// The height of the dialog content area
-  final double? height;
-
-  /// The width of the dialog content area
-  final double? width;
-
   /// Hint text displayed in the search field
   final String? searchHint;
 
@@ -155,8 +149,6 @@ class MultiSelectorDialog<T> extends StatefulWidget {
     this.confirmText,
     this.cancelText,
     this.selectedColor,
-    this.height,
-    this.width,
     this.searchHint,
     this.colorBuilder,
     this.backgroundColor,
@@ -185,7 +177,8 @@ class MultiSelectorDialog<T> extends StatefulWidget {
 }
 
 /// The state class for [MultiSelectorDialog]
-class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with MultiSelectorActions<T> {
+class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
+    with MultiSelectorActions<T> {
   late List<T> _selectedValues;
   bool _showSearch = false;
   late List<MultiSelectorItem<T>> _items;
@@ -222,7 +215,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
   Widget _buildListItem(MultiSelectorItem<T> item) {
     final theme = Theme.of(context);
     final isSelected = item.selected;
-    final itemColor = widget.colorBuilder?.call(item.value) ?? widget.selectedColor ?? theme.primaryColor;
+    final itemColor =
+        widget.colorBuilder?.call(item.value) ??
+        widget.selectedColor ??
+        theme.primaryColor;
 
     return InkWell(
       onTap: () => _handleItemSelection(item, !isSelected),
@@ -245,13 +241,16 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
             Expanded(
               child: Text(
                 item.label,
-                style: isSelected
-                    ? widget.selectedItemsTextStyle?.copyWith(color: itemColor) ??
-                    theme.textTheme.bodyMedium?.copyWith(
-                      color: itemColor,
-                      fontWeight: FontWeight.bold,
-                    )
-                    : widget.itemsTextStyle ?? theme.textTheme.bodyMedium,
+                style:
+                    isSelected
+                        ? widget.selectedItemsTextStyle?.copyWith(
+                              color: itemColor,
+                            ) ??
+                            theme.textTheme.bodyMedium?.copyWith(
+                              color: itemColor,
+                              fontWeight: FontWeight.bold,
+                            )
+                        : widget.itemsTextStyle ?? theme.textTheme.bodyMedium,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
@@ -272,13 +271,16 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         selected: isSelected,
         label: Text(
           item.label,
-          style: isSelected
-              ? widget.selectedItemsTextStyle?.copyWith(color: color ?? Theme.of(context).primaryColor) ??
-              TextStyle(
-                color: color ?? Theme.of(context).primaryColor,
-                fontWeight: FontWeight.bold,
-              )
-              : widget.itemsTextStyle,
+          style:
+              isSelected
+                  ? widget.selectedItemsTextStyle?.copyWith(
+                        color: color ?? Theme.of(context).primaryColor,
+                      ) ??
+                      TextStyle(
+                        color: color ?? Theme.of(context).primaryColor,
+                        fontWeight: FontWeight.bold,
+                      )
+                  : widget.itemsTextStyle,
         ),
         selectedColor: color?.withAlpha(51),
         backgroundColor: widget.unselectedColor ?? Colors.grey.shade200,
@@ -291,7 +293,11 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
   void _handleItemSelection(MultiSelectorItem<T> item, bool checked) {
     setState(() {
       item.selected = checked;
-      _selectedValues = onItemCheckedChange(_selectedValues, item.value, checked);
+      _selectedValues = onItemCheckedChange(
+        _selectedValues,
+        item.value,
+        checked,
+      );
 
       if (widget.separateSelectedItems) {
         _items = separateSelected(_items);
@@ -307,12 +313,20 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         controller: _searchController,
         focusNode: _searchFocusNode,
         autofocus: true,
-        style: widget.searchTextStyle ?? const TextStyle(fontSize: 16, color: Colors.black87),
+        style:
+            widget.searchTextStyle ??
+            const TextStyle(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
           hintText: widget.searchHint ?? "Search...",
-          hintStyle: widget.searchHintStyle ?? const TextStyle(color: Colors.grey, fontSize: 16),
-          prefixIcon: widget.searchIcon ?? const Icon(Icons.search, color: Colors.grey),
-          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          hintStyle:
+              widget.searchHintStyle ??
+              const TextStyle(color: Colors.grey, fontSize: 16),
+          prefixIcon:
+              widget.searchIcon ?? const Icon(Icons.search, color: Colors.grey),
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 16,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade400),
@@ -359,16 +373,21 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
                 if (widget.title != null)
                   Flexible(
                     child: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.titleLarge ??
-                          const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style:
+                          Theme.of(context).textTheme.titleLarge ??
+                          const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                          ),
                       child: widget.title!,
                     ),
                   ),
                 if (widget.searchable)
                   IconButton(
-                    icon: _showSearch
-                        ? widget.closeSearchIcon ?? const Icon(Icons.close)
-                        : widget.searchIcon ?? const Icon(Icons.search),
+                    icon:
+                        _showSearch
+                            ? widget.closeSearchIcon ?? const Icon(Icons.close)
+                            : widget.searchIcon ?? const Icon(Icons.search),
                     onPressed: () {
                       setState(() {
                         _showSearch = !_showSearch;
@@ -397,9 +416,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
     if (!widget.showSelectAll) return const SizedBox();
 
     final allSelected = _items.every((item) => item.selected);
-    final String buttonText = allSelected
-        ? widget.deselectAllText ?? "Deselect All"
-        : widget.selectAllText ?? "Select All";
+    final String buttonText =
+        allSelected
+            ? widget.deselectAllText ?? "Deselect All"
+            : widget.selectAllText ?? "Select All";
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 3.0),
@@ -424,9 +444,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
           });
         },
         style: OutlinedButton.styleFrom(
-          backgroundColor: allSelected
-              ? Theme.of(context).colorScheme.primary.withAlpha(13)
-              : null,
+          backgroundColor:
+              allSelected
+                  ? Theme.of(context).colorScheme.primary.withAlpha(13)
+                  : null,
           side: BorderSide(
             color: Theme.of(context).colorScheme.primary,
             width: 1.0,
@@ -439,9 +460,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
         child: Text(
           buttonText,
           style: TextStyle(
-            color: allSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.onSurface,
+            color:
+                allSelected
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).colorScheme.onSurface,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -457,7 +479,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
           padding: const EdgeInsets.all(16.0),
           child: Text(
             "No items found",
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
           ),
         ),
       );
@@ -478,7 +502,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
           padding: const EdgeInsets.all(16.0),
           child: Text(
             "No items found",
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+            style: Theme.of(
+              context,
+            ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
           ),
         ),
       );
@@ -509,27 +535,33 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
             child: DefaultTextStyle(
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onSurface.withAlpha(179),
-              ) ??
+              style:
+                  theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurface.withAlpha(179),
+                  ) ??
                   TextStyle(color: theme.colorScheme.onSurface.withAlpha(179)),
               child: widget.cancelText ?? const Text("CANCEL"),
             ),
           ),
           const SizedBox(width: 8),
           ElevatedButton(
-            onPressed: () => onConfirmTap(context, _selectedValues, widget.onConfirm),
+            onPressed:
+                () => onConfirmTap(context, _selectedValues, widget.onConfirm),
             style: ElevatedButton.styleFrom(
-              backgroundColor: widget.selectedColor ?? theme.colorScheme.primary,
+              backgroundColor:
+                  widget.selectedColor ?? theme.colorScheme.primary,
               foregroundColor: theme.colorScheme.onPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
             child: DefaultTextStyle(
-              style: theme.textTheme.bodyLarge?.copyWith(
-                color: theme.colorScheme.onPrimary,
-                fontWeight: FontWeight.w600,
-              ) ??
+              style:
+                  theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                    fontWeight: FontWeight.w600,
+                  ) ??
                   TextStyle(
                     color: theme.colorScheme.onPrimary,
                     fontWeight: FontWeight.w600,
@@ -549,20 +581,24 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> with Mu
 
     return Dialog(
       elevation: widget.elevation ?? 8.0,
-      shape: widget.shape ??
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-      backgroundColor: widget.backgroundColor ?? theme.dialogTheme.backgroundColor ?? theme.colorScheme.surface,
+      shape:
+          widget.shape ??
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+      backgroundColor:
+          widget.backgroundColor ??
+          theme.dialogTheme.backgroundColor ??
+          theme.colorScheme.surface,
       insetPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       child: ConstrainedBox(
         constraints: BoxConstraints(
-          maxWidth: widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
-          maxHeight: widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
-          minWidth: 300.0,
+          maxWidth:
+              widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
+          maxHeight:
+              widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
+          minWidth: widget.dialogWidth ?? 300.0,
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 16.0,left: 8, right: 8),
+          padding: const EdgeInsets.only(top: 16.0, left: 8, right: 8),
           child: Column(
             children: [
               _buildHeader(),
