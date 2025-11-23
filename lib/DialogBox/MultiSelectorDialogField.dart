@@ -218,7 +218,7 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.onSelectionChanged,
     super.onSaved,
     super.validator,
-    AutovalidateMode super.autovalidateMode = AutovalidateMode.disabled,
+    super.autovalidateMode = AutovalidateMode.disabled,
   }) : super(
     initialValue: initialValue,
     builder: (FormFieldState<List<V>> state) {
@@ -489,6 +489,9 @@ class _MultiSelectorDialogFieldViewState<V>
     extends State<_MultiSelectorDialogFieldView<V>> {
   /// Currently selected items
   late List<V> _selectedItems;
+  
+  /// Track if user has interacted with the field
+  bool _hasInteracted = false;
 
   @override
   void initState() {
@@ -595,7 +598,9 @@ class _MultiSelectorDialogFieldViewState<V>
   /// Builds the field button
   Widget _buildFieldButton(BuildContext context) {
     final theme = Theme.of(context);
-    final hasError = widget.state.hasError;
+    // Only show error if user has interacted or autovalidateMode allows it
+    final shouldShowError = widget.state.hasError && 
+        (_hasInteracted || widget.state.widget.autovalidateMode == AutovalidateMode.always);
     final isDense = widget.isDense;
 
     if (widget.buttonBuilder != null) {
@@ -607,8 +612,8 @@ class _MultiSelectorDialogFieldViewState<V>
         onTap: () => _showDialog(context),
         child: InputDecorator(
           decoration: widget.decoration!.copyWith(
-            errorText: hasError ? widget.state.errorText : null,
-            errorStyle: hasError ? widget.decoration?.errorStyle : null,
+            errorText: shouldShowError ? widget.state.errorText : null,
+            errorStyle: shouldShowError ? widget.decoration?.errorStyle : null,
             contentPadding:
             isDense
                 ? const EdgeInsets.symmetric(
@@ -632,14 +637,14 @@ class _MultiSelectorDialogFieldViewState<V>
     }
 
     final borderColor =
-    hasError
+    shouldShowError
         ? theme.colorScheme.error
         : _selectedItems.isNotEmpty
         ? widget.selectedColor ?? theme.primaryColor
         : theme.dividerColor;
 
     final borderWidth =
-    hasError
+    shouldShowError
         ? 1.5
         : _selectedItems.isNotEmpty
         ? 1.25
@@ -669,14 +674,14 @@ class _MultiSelectorDialogFieldViewState<V>
                   Text(
                     'Select',
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: hasError ? theme.colorScheme.error : null,
+                      color: shouldShowError ? theme.colorScheme.error : null,
                     ),
                   ),
               widget.buttonIcon ??
                   Icon(
                     Icons.arrow_drop_down,
                     color:
-                    hasError
+                    shouldShowError
                         ? theme.colorScheme.error
                         : theme.iconTheme.color,
                     size: isDense ? 20 : 24,
@@ -690,6 +695,12 @@ class _MultiSelectorDialogFieldViewState<V>
 
   /// Shows the selection dialog
   Future<void> _showDialog(BuildContext ctx) async {
+    // Mark as interacted when user opens the dialog
+    if (!_hasInteracted) {
+      setState(() {
+        _hasInteracted = true;
+      });
+    }
     await showDialog(
       barrierColor: widget.barrierColor ?? Colors.black54,
       context: context,
@@ -735,6 +746,10 @@ class _MultiSelectorDialogFieldViewState<V>
             _selectedItems = selected;
             widget.state.didChange(_selectedItems);
             widget.onConfirm(_selectedItems);
+            // Trigger validation after user interaction
+            if (_hasInteracted) {
+              widget.state.validate();
+            }
           },
         );
 

@@ -64,9 +64,8 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
               ),
               const SizedBox(height: 8),
               MultiSelectorDialogField<String>(
-                dialogWidth: 150,
-                dialogHeight: 150,
-
+                dialogWidth: 300,
+                dialogHeight: 400,
                 items: animals
                     .map((animal) => MultiSelectorItem(value: animal, label: animal))
                     .toList(),
@@ -78,7 +77,7 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                   return null;
                 },
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                buttonText: const Text("Select Numbers"),
+                buttonText: const Text("Select Animal"),
                 onConfirm: (values) {
                   setState(() {
                     _selectedNumbers = values;

@@ -1,3 +1,18 @@
+## [1.0.4] - 2025-01-24
+
+### Fixes
+- **AutovalidateMode behavior**: Fixed `AutovalidateMode.onUserInteraction` to properly respect user interaction state
+  - Error borders now only appear after user has interacted with the field, not immediately on app startup
+  - Follows Flutter's standard FormField validation behavior
+  - Resolves issue where validation errors were shown prematurely
+- **User interaction tracking**: Implemented proper interaction state management for validation timing
+
+### Technical Details
+- Added `_hasInteracted` boolean to track user interaction state
+- Updated error display logic to consider both validation state and interaction history
+- Modified border colors, text colors, and icon colors to respect interaction-based validation
+- Enhanced validation trigger logic for better user experience
+
 ## [1.0.3] -  2025-08-1
 
 ### Fixes
