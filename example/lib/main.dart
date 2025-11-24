@@ -12,10 +12,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Enhanced MultiSelect Demo',
+      title: 'MultiSelector Demo',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        useMaterial3: true,
       ),
       home: const MultiSelectExamplePage(),
     );
@@ -33,111 +34,169 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
   final _formKey = GlobalKey<FormState>();
 
   final List<String> animals = [
-    "Dog",
-    "Cat",
-    "Elephant",
-    "Tiger",
-    "Lion",
-    "Cow",
-    "Horse",
-    "Monkey",
-    "Deer",
-    "Rabbit",
+    "Dog", "Cat", "Elephant", "Tiger", "Lion", 
+    "Cow", "Horse", "Monkey", "Deer", "Rabbit"
   ];
 
-  List<String> _selectedNumbers = [];
+  final List<String> fruits = [
+    "Apple", "Banana", "Cherry", "Date", "Elderberry",
+    "Fig", "Grape", "Honeydew", "Kiwi", "Lemon"
+  ];
+
+  final List<String> tags = [
+    "Work", "Personal", "Urgent", "Later", "Done"
+  ];
+
+  List<String> _selectedAnimals = [];
+  List<String> _selectedFruits = [];
+  List<String> _selectedTags = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Enhanced MultiSelect Demo'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('MultiSelector Demo'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+      ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(24),
         child: Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'MultiSelector Example:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
+              // Example 1: Basic List Mode
+              _buildSectionHeader('1. Basic List Mode (with Validation)'),
               MultiSelectorDialogField<String>(
-                dialogWidth: 300,
-                dialogHeight: 400,
                 items: animals
-                    .map((animal) => MultiSelectorItem(value: animal, label: animal))
+                    .map((e) => MultiSelectorItem(value: e, label: e))
                     .toList(),
-                initialValue: _selectedNumbers,
+                initialValue: _selectedAnimals,
+                title: const Text("Select Animals"),
+                searchable: true,
+                showSelectAll: true,
                 validator: (values) {
                   if (values == null || values.isEmpty) {
-                    return "Please select at least one item";
+                    return "Please select at least one animal";
                   }
                   return null;
                 },
                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                buttonText: const Text("Select Animal"),
                 onConfirm: (values) {
                   setState(() {
-                    _selectedNumbers = values;
+                    _selectedAnimals = values;
                   });
                 },
-                searchable: true,
-                showSelectAll: true,
-                unselectedColor: Colors.white,
                 decoration: InputDecoration(
+                  labelText: "Animals",
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Theme.of(context).primaryColor),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-                  isDense: true,
-                  errorStyle: TextStyle(fontSize: 0)
+                  prefixIcon: const Icon(Icons.pets),
                 ),
-                // Remove fieldShape since we're using InputDecoration
-                // fieldShape: RoundedRectangleBorder(
-                //   borderRadius: BorderRadius.circular(8),
-                //   side: const BorderSide(color: Colors.grey),
-                // ),
               ),
-              Divider(),
-              const SizedBox(height: 30),
+
+              const SizedBox(height: 32),
+
+              // Example 2: Chip Mode
+              _buildSectionHeader('2. Chip Mode (Separate Selected)'),
+              MultiSelectorDialogField<String>(
+                items: fruits
+                    .map((e) => MultiSelectorItem(value: e, label: e))
+                    .toList(),
+                initialValue: _selectedFruits,
+                title: const Text("Select Fruits"),
+                searchable: true,
+                useChipsForSelection: true, // Enable chip mode
+                // separateSelectedItems: true, // Separate selected items
+                onConfirm: (values) {
+                  setState(() {
+                    _selectedFruits = values;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: "Fruits",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.local_florist),
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Example 3: Custom Colors
+              _buildSectionHeader('3. Custom Colors & Styling'),
+              MultiSelectorDialogField<String>(
+                items: tags
+                    .map((e) => MultiSelectorItem(value: e, label: e))
+                    .toList(),
+                initialValue: _selectedTags,
+                title: const Text("Select Tags"),
+                searchable: false,
+                useChipsForSelection: true,
+                colorBuilder: (value) {
+                  switch (value) {
+                    case "Urgent": return Colors.red;
+                    case "Work": return Colors.blue;
+                    case "Personal": return Colors.green;
+                    default: return Colors.orange;
+                  }
+                },
+                onConfirm: (values) {
+                  setState(() {
+                    _selectedTags = values;
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: "Tags",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.label),
+                ),
+              ),
+
+              const SizedBox(height: 48),
 
               Center(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                  ),
+                child: FilledButton.icon(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(SnackBar(content: Text("Selected Animal: $_selectedNumbers")));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            "Animals: ${_selectedAnimals.length}, "
+                            "Fruits: ${_selectedFruits.length}, "
+                            "Tags: ${_selectedTags.length}"
+                          ),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
                     }
                   },
-                  child: const Text("Submit Form"),
+                  icon: const Icon(Icons.check),
+                  label: const Text("Submit Form"),
+                  style: FilledButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

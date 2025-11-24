@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorActions.dart';
+import 'package:flutter_multi_selector/Controllers/MultiSelectorController.dart';
 import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
 
 /// A customizable dialog widget for selecting multiple items with various display options.
@@ -33,7 +33,7 @@ import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
 ///
 /// See also:
 /// - [MultiSelectorItem] for individual item configuration
-/// - [MultiSelectorActions] for the underlying selection logic
+/// - [MultiSelectorController] for the underlying selection logic
 class MultiSelectorDialog<T> extends StatefulWidget {
   /// The list of items available for selection
   ///
@@ -177,35 +177,24 @@ class MultiSelectorDialog<T> extends StatefulWidget {
 }
 
 /// The state class for [MultiSelectorDialog]
-class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
-    with MultiSelectorActions<T> {
-  late List<T> _selectedValues;
-  bool _showSearch = false;
-  late List<MultiSelectorItem<T>> _items;
+class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
+  late MultiSelectorController<T> _controller;
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    _selectedValues = List<T>.from(widget.initialValue);
-    _items = List<MultiSelectorItem<T>>.from(widget.items);
-    _initializeItems();
-  }
-
-  /// Initializes item selection states and applies separation if enabled
-  void _initializeItems() {
-    for (final item in _items) {
-      item.selected = _selectedValues.contains(item.value);
-    }
-
-    if (widget.separateSelectedItems) {
-      _items = separateSelected(_items);
-    }
+    _controller = MultiSelectorController<T>(
+      items: widget.items,
+      initialSelectedValues: widget.initialValue,
+      separateSelectedItems: widget.separateSelectedItems,
+    );
   }
 
   @override
   void dispose() {
+    _controller.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
     super.dispose();
@@ -221,7 +210,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
         theme.primaryColor;
 
     return InkWell(
-      onTap: () => _handleItemSelection(item, !isSelected),
+      onTap: () => _controller.toggleSelection(item.value),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 1.0),
         child: Row(
@@ -235,7 +224,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
                 }
                 return widget.unselectedColor ?? theme.unselectedWidgetColor;
               }),
-              onChanged: (checked) => _handleItemSelection(item, checked!),
+              onChanged: (checked) => _controller.toggleSelection(item.value),
             ),
             const SizedBox(width: 4),
             Expanded(
@@ -284,25 +273,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
         ),
         selectedColor: color?.withAlpha(51),
         backgroundColor: widget.unselectedColor ?? Colors.grey.shade200,
-        onSelected: (checked) => _handleItemSelection(item, checked),
+        onSelected: (checked) => _controller.toggleSelection(item.value),
       ),
     );
-  }
-
-  /// Handles item selection changes
-  void _handleItemSelection(MultiSelectorItem<T> item, bool checked) {
-    setState(() {
-      item.selected = checked;
-      _selectedValues = onItemCheckedChange(
-        _selectedValues,
-        item.value,
-        checked,
-      );
-
-      if (widget.separateSelectedItems) {
-        _items = separateSelected(_items);
-      }
-    });
   }
 
   /// Builds the search input field
@@ -343,19 +316,9 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
             ),
           ),
         ),
-        onChanged: _updateSearchQuery,
+        onChanged: _controller.updateSearchQuery,
       ),
     );
-  }
-
-  /// Updates the item list based on search query
-  void _updateSearchQuery(String query) {
-    setState(() {
-      _items = updateSearchQuery(query, widget.items);
-      if (widget.separateSelectedItems) {
-        _items = separateSelected(_items);
-      }
-    });
   }
 
   /// Builds the dialog header (title + search toggle)
@@ -385,27 +348,24 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
                 if (widget.searchable)
                   IconButton(
                     icon:
-                        _showSearch
+                        _controller.isSearching
                             ? widget.closeSearchIcon ?? const Icon(Icons.close)
                             : widget.searchIcon ?? const Icon(Icons.search),
                     onPressed: () {
-                      setState(() {
-                        _showSearch = !_showSearch;
-                        if (!_showSearch) {
-                          _searchController.clear();
-                          _updateSearchQuery('');
-                        } else {
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            _searchFocusNode.requestFocus();
-                          });
-                        }
-                      });
+                      _controller.toggleSearch();
+                      if (_controller.isSearching) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          _searchFocusNode.requestFocus();
+                        });
+                      } else {
+                        _searchController.clear();
+                      }
                     },
                   ),
               ],
             ),
           ),
-          if (_showSearch) _buildSearchField(),
+          if (_controller.isSearching) _buildSearchField(),
         ],
       ),
     );
@@ -415,7 +375,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
   Widget _buildSelectAllButton() {
     if (!widget.showSelectAll) return const SizedBox();
 
-    final allSelected = _items.every((item) => item.selected);
+    final allSelected = _controller.isAllSelected;
     final String buttonText =
         allSelected
             ? widget.deselectAllText ?? "Deselect All"
@@ -425,23 +385,11 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 3.0),
       child: OutlinedButton(
         onPressed: () {
-          setState(() {
-            if (allSelected) {
-              for (var item in _items) {
-                item.selected = false;
-              }
-              _selectedValues.clear();
-            } else {
-              for (var item in _items) {
-                item.selected = true;
-              }
-              _selectedValues = _items.map((item) => item.value).toList();
-            }
-
-            if (widget.separateSelectedItems) {
-              _items = separateSelected(_items);
-            }
-          });
+          if (allSelected) {
+            _controller.deselectAll();
+          } else {
+            _controller.selectAll();
+          }
         },
         style: OutlinedButton.styleFrom(
           backgroundColor:
@@ -473,7 +421,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
 
   /// Builds the scrollable list content (checkbox mode)
   Widget _buildListContent() {
-    if (_items.isEmpty) {
+    if (_controller.items.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -489,14 +437,14 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
 
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      itemCount: _items.length,
-      itemBuilder: (context, index) => _buildListItem(_items[index]),
+      itemCount: _controller.items.length,
+      itemBuilder: (context, index) => _buildListItem(_controller.items[index]),
     );
   }
 
   /// Builds the scrollable chip content (chip mode)
   Widget _buildChipContent() {
-    if (_items.isEmpty) {
+    if (_controller.items.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -515,7 +463,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
       child: Wrap(
         spacing: 8.0,
         runSpacing: 8.0,
-        children: _items.map(_buildChipItem).toList(),
+        children: _controller.items.map(_buildChipItem).toList(),
       ),
     );
   }
@@ -530,7 +478,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           TextButton(
-            onPressed: () => onCancelTap(context, widget.initialValue),
+            onPressed: () => Navigator.of(context).pop(widget.initialValue),
             style: TextButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             ),
@@ -545,8 +493,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
           ),
           const SizedBox(width: 8),
           ElevatedButton(
-            onPressed:
-                () => onConfirmTap(context, _selectedValues, widget.onConfirm),
+            onPressed: () {
+              Navigator.of(context).pop(_controller.selectedValues);
+              widget.onConfirm?.call(_controller.selectedValues);
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor:
                   widget.selectedColor ?? theme.colorScheme.primary,
@@ -579,38 +529,43 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>>
     final theme = Theme.of(context);
     final isChipStyle = widget.useChipsForSelection || widget.shape != null;
 
-    return Dialog(
-      elevation: widget.elevation ?? 8.0,
-      shape:
-          widget.shape ??
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-      backgroundColor:
-          widget.backgroundColor ??
-          theme.dialogTheme.backgroundColor ??
-          theme.colorScheme.surface,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(
-          maxWidth:
-              widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
-          maxHeight:
-              widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
-          minWidth: widget.dialogWidth ?? 300.0,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 8, right: 8),
-          child: Column(
-            children: [
-              _buildHeader(),
-              if (widget.showSelectAll) _buildSelectAllButton(),
-              Expanded(
-                child: isChipStyle ? _buildChipContent() : _buildListContent(),
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Dialog(
+          elevation: widget.elevation ?? 8.0,
+          shape:
+              widget.shape ??
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
+          backgroundColor:
+              widget.backgroundColor ??
+              theme.dialogTheme.backgroundColor ??
+              theme.colorScheme.surface,
+          insetPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth:
+                  widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
+              maxHeight:
+                  widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
+              minWidth: widget.dialogWidth ?? 300.0,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 16.0, left: 8, right: 8),
+              child: Column(
+                children: [
+                  _buildHeader(),
+                  if (widget.showSelectAll) _buildSelectAllButton(),
+                  Expanded(
+                    child: isChipStyle ? _buildChipContent() : _buildListContent(),
+                  ),
+                  _buildActionButtons(),
+                ],
               ),
-              _buildActionButtons(),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

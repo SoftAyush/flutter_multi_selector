@@ -1,7 +1,19 @@
+## [1.0.5] - 2025-11-24
+
+### Optimized
+- **State Management**: Refactored internal logic to use `MultiSelectorController` for better performance and separation of concerns.
+- **Performance**: Improved rendering efficiency by replacing `setState` with `AnimatedBuilder` in `MultiSelectorDialog`.
+- **Code Quality**: Reduced boilerplate and improved readability.
+
+### Fixed
+- **MultiSelectorDialogField**: Added missing parameters `useChipsForSelection` and `separateSelectedItems` to the field widget.
+- **UI Overlap**: Fixed issue where "Select" text overlapped with label when selection was empty.
+- **Error Styling**: "Select" text now turns red when validation fails.
+
 ## [1.0.4] - 2025-01-24
 
 ### Fixes
-- **AutovalidateMode behavior**: Fixed `AutovalidateMode.onUserInteraction` to properly respect user interaction state
+- **Auto validateMode behavior**: Fixed `AutovalidateMode.onUserInteraction` to properly respect user interaction state
   - Error borders now only appear after user has interacted with the field, not immediately on app startup
   - Follows Flutter's standard FormField validation behavior
   - Resolves issue where validation errors were shown prematurely

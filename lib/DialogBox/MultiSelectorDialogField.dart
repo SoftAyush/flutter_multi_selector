@@ -42,9 +42,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   /// Input decoration for the field
   final InputDecoration? decoration;
 
-  // /// Box decoration for the field
-  // final BoxDecoration? boxDecoration;
-
   /// Whether the field should be dense
   final bool isDense;
 
@@ -66,11 +63,8 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   /// Function to build custom color for each value
   final Color Function(V)? colorBuilder;
 
-  // /// Whether to separate selected items in the dialog
-  // final bool separateSelectedItems;
-
-  // /// Duration for animations
-  // final Duration animationDuration;
+  /// Whether to separate selected items in the dialog
+  final bool separateSelectedItems;
 
   /// Shape of the dialog
   final ShapeBorder? dialogShape;
@@ -81,21 +75,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   /// Custom builder for the field button
   final Widget Function(BuildContext context)? buttonBuilder;
 
-  // /// Custom builder for the dialog container
-  // final Widget Function(BuildContext context, Widget child)? dialogBuilder;
-
-  // /// Whether to show clear all button
-  // final bool showClearAll;
-
-  // /// Text for clear all button
-  // final Text? clearAllText;
-
-  // /// Icon for clear all button
-  // final Icon? clearAllIcon;
-  //
-  // /// Callback when clear all is pressed
-  // final VoidCallback? onClearAll;
-
   /// Whether to show select all button
   final bool showSelectAll;
 
@@ -104,12 +83,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
 
   /// Text for deselect all button
   final String? deselectAllText;
-
-  // /// Icon for select all button
-  // final Icon? selectAllIcon;
-
-  // /// Callback when select all is pressed
-  // final VoidCallback? onSelectAll;
 
   /// Height of the dialog
   final double? dialogHeight;
@@ -147,15 +120,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   /// Icon for closing search
   final Icon? closeSearchIcon;
 
-  // /// Whether to show dividers between items
-  // final bool showItemsDivider;
-
-  // /// Color of the divider between items
-  // final Color? dividerColor;
-
-  // /// Border radius of the dialog
-  // final BorderRadius? dialogBorderRadius;
-
   /// Elevation of the dialog
   final double dialogElevation;
 
@@ -164,6 +128,9 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
 
   /// Callback when selection changes
   final ValueChanged<List<V>>? onSelectionChanged;
+
+  /// Whether to use chips instead of checkboxes
+  final bool useChipsForSelection;
 
   /// Creates a [MultiSelectorDialogField]
   MultiSelectorDialogField({
@@ -174,7 +141,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.buttonText,
     this.buttonIcon,
     this.decoration,
-    // this.boxDecoration,
     this.isDense = false,
     this.selectedColor,
     this.searchable = false,
@@ -183,21 +149,13 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.searchHint,
     this.colorBuilder,
     this.initialValue = const [],
-    // this.separateSelectedItems = false,
-    // this.animationDuration = const Duration(milliseconds: 200),
+    this.separateSelectedItems = false,
     this.dialogShape,
     this.fieldShape,
     this.buttonBuilder,
-    // this.dialogBuilder,
-    // this.showClearAll = false,
-    // this.clearAllText,
-    // this.clearAllIcon,
-    // this.onClearAll,
     this.showSelectAll = false,
     this.selectAllText,
     this.deselectAllText,
-    // this.selectAllIcon,
-    // this.onSelectAll,
     this.dialogHeight,
     this.dialogWidth,
     this.barrierColor,
@@ -210,12 +168,10 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.searchHintStyle,
     this.searchIcon,
     this.closeSearchIcon,
-    // this.showItemsDivider = false,
-    // this.dividerColor,
-    // this.dialogBorderRadius,
     this.dialogElevation = 8.0,
     this.dialogPadding,
     this.onSelectionChanged,
+    this.useChipsForSelection = false,
     super.onSaved,
     super.validator,
     super.autovalidateMode = AutovalidateMode.disabled,
@@ -230,7 +186,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
         buttonText: buttonText,
         buttonIcon: buttonIcon,
         decoration: decoration,
-        // boxDecoration: boxDecoration,
         isDense: isDense,
         initialValue: initialValue,
         selectedColor: selectedColor,
@@ -239,21 +194,13 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
         cancelText: cancelText,
         searchHint: searchHint,
         colorBuilder: colorBuilder,
-        // separateSelectedItems: separateSelectedItems,
-        // animationDuration: animationDuration,
+        separateSelectedItems: separateSelectedItems,
         dialogShape: dialogShape,
         fieldShape: fieldShape,
         buttonBuilder: buttonBuilder,
-        // dialogBuilder: dialogBuilder,
-        // showClearAll: showClearAll,
-        // clearAllText: clearAllText,
-        // clearAllIcon: clearAllIcon,
-        // onClearAll: onClearAll,
         showSelectAll: showSelectAll,
         selectAllText: selectAllText,
         deselectAllText: deselectAllText,
-        // selectAllIcon: selectAllIcon,
-        // onSelectAll: onSelectAll,
         dialogHeight: dialogHeight,
         dialogWidth: dialogWidth,
         barrierColor: barrierColor,
@@ -266,12 +213,10 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
         searchHintStyle: searchHintStyle,
         searchIcon: searchIcon,
         closeSearchIcon: closeSearchIcon,
-        // showItemsDivider: showItemsDivider,
-        // dividerColor: dividerColor,
-        // dialogBorderRadius: dialogBorderRadius,
         dialogElevation: dialogElevation,
         dialogPadding: dialogPadding,
         onSelectionChanged: onSelectionChanged,
+        useChipsForSelection: useChipsForSelection,
       );
     },
   );
@@ -279,154 +224,45 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
 
 /// The private view class for [MultiSelectorDialogField]
 class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
-  /// The form field state
   final FormFieldState<List<V>> state;
-
-  /// List of items available for selection
   final List<MultiSelectorItem<V>> items;
-
-  /// Callback when selection is confirmed
   final ValueChanged<List<V>> onConfirm;
-
-  /// Initial selected values
   final List<V> initialValue;
-
-  /// Title widget for the dialog
   final Widget? title;
-
-  /// Text for the field button
   final Text? buttonText;
-
-  /// Icon for the field button
   final Icon? buttonIcon;
-
-  /// Input decoration for the field
   final InputDecoration? decoration;
-
-  // /// Box decoration for the field
-  // final BoxDecoration? boxDecoration;
-
-  /// Whether the field should be dense
   final bool isDense;
-
-  /// Color for selected items
   final Color? selectedColor;
-
-  /// Whether the dialog should be searchable
   final bool searchable;
-
-  /// Text for the confirm button
   final Text? confirmText;
-
-  /// Text for the cancel button
   final Text? cancelText;
-
-  /// Hint text for the search field
   final String? searchHint;
-
-  /// Function to build custom color for each value
   final Color Function(V)? colorBuilder;
-
-  // /// Whether to separate selected items in the dialog
-  // final bool separateSelectedItems;
-
-  // /// Duration for animations
-  // final Duration animationDuration;
-
-  /// Shape of the dialog
+  final bool separateSelectedItems;
   final ShapeBorder? dialogShape;
-
-  /// Shape of the field
   final ShapeBorder? fieldShape;
-
-  /// Custom builder for the field button
   final Widget Function(BuildContext context)? buttonBuilder;
-
-  // /// Custom builder for the dialog container
-  // final Widget Function(BuildContext context, Widget child)? dialogBuilder;
-
-  // /// Whether to show clear all button
-  // final bool showClearAll;
-  //
-  // /// Text for clear all button
-  // final Text? clearAllText;
-  //
-  // /// Icon for clear all button
-  // final Icon? clearAllIcon;
-  //
-  // /// Callback when clear all is pressed
-  // final VoidCallback? onClearAll;
-
-  /// Whether to show select all button
   final bool showSelectAll;
-
-  /// Text for select all button
   final String? selectAllText;
-
-  /// Text for deselect all button
   final String? deselectAllText;
-
-  // /// Icon for select all button
-  // final Icon? selectAllIcon;
-  //
-  // /// Callback when select all is pressed
-  // final VoidCallback? onSelectAll;
-
-  /// Height of the dialog
   final double? dialogHeight;
-
-  /// Width of the dialog
   final double? dialogWidth;
-
-  /// Color of the dialog barrier
   final Color? barrierColor;
-
-  /// Background color of the dialog
   final Color? backgroundColor;
-
-  /// Color for unselected items
   final Color? unselectedColor;
-
-  /// Color of the checkmark
   final Color? checkColor;
-
-  /// Text style for items
   final TextStyle? itemsTextStyle;
-
-  /// Text style for selected items
   final TextStyle? selectedItemsTextStyle;
-
-  /// Text style for search text
   final TextStyle? searchTextStyle;
-
-  /// Text style for search hint
   final TextStyle? searchHintStyle;
-
-  /// Icon for search field
   final Icon? searchIcon;
-
-  /// Icon for closing search
   final Icon? closeSearchIcon;
-
-  // /// Whether to show dividers between items
-  // final bool showItemsDivider;
-  //
-  // /// Color of the divider between items
-  // final Color? dividerColor;
-  //
-  // /// Border radius of the dialog
-  // final BorderRadius? dialogBorderRadius;
-
-  /// Elevation of the dialog
   final double dialogElevation;
-
-  /// Padding for the dialog
   final EdgeInsets? dialogPadding;
-
-  /// Callback when selection changes
   final ValueChanged<List<V>>? onSelectionChanged;
+  final bool useChipsForSelection;
 
-  /// Creates a [_MultiSelectorDialogFieldView]
   const _MultiSelectorDialogFieldView({
     required this.state,
     required this.items,
@@ -436,7 +272,6 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
     this.buttonText,
     this.buttonIcon,
     this.decoration,
-    // this.boxDecoration,
     this.isDense = false,
     this.selectedColor,
     this.searchable = false,
@@ -444,21 +279,13 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
     this.cancelText,
     this.searchHint,
     this.colorBuilder,
-    // this.separateSelectedItems = false,
-    // this.animationDuration = const Duration(milliseconds: 200),
+    this.separateSelectedItems = false,
     this.dialogShape,
     this.fieldShape,
     this.buttonBuilder,
-    // this.dialogBuilder,
-    // this.showClearAll = false,
-    // this.clearAllText,
-    // this.clearAllIcon,
-    // this.onClearAll,
     this.showSelectAll = false,
     this.selectAllText,
     this.deselectAllText,
-    // this.selectAllIcon,
-    // this.onSelectAll,
     this.dialogHeight,
     this.dialogWidth,
     this.barrierColor,
@@ -471,12 +298,10 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
     this.searchHintStyle,
     this.searchIcon,
     this.closeSearchIcon,
-    // this.showItemsDivider = false,
-    // this.dividerColor,
-    // this.dialogBorderRadius,
     this.dialogElevation = 8.0,
     this.dialogPadding,
     this.onSelectionChanged,
+    this.useChipsForSelection = false,
   });
 
   @override
@@ -484,13 +309,9 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
       _MultiSelectorDialogFieldViewState<V>();
 }
 
-/// The state class for [_MultiSelectorDialogFieldView]
 class _MultiSelectorDialogFieldViewState<V>
     extends State<_MultiSelectorDialogFieldView<V>> {
-  /// Currently selected items
   late List<V> _selectedItems;
-  
-  /// Track if user has interacted with the field
   bool _hasInteracted = false;
 
   @override
@@ -501,7 +322,6 @@ class _MultiSelectorDialogFieldViewState<V>
           ? widget.initialValue
           : widget.state.value ?? [],
     );
-    // Schedule value update after first frame to avoid build-time mutation
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         widget.state.didChange(_selectedItems);
@@ -523,7 +343,6 @@ class _MultiSelectorDialogFieldViewState<V>
     return listEquals(a, b);
   }
 
-  /// Updates the current selection
   void _updateSelectedItems(List<V> newItems) {
     if (_listEquals(_selectedItems, newItems)) return;
     setState(() => _selectedItems = List<V>.from(newItems));
@@ -538,7 +357,6 @@ class _MultiSelectorDialogFieldViewState<V>
     widget.onConfirm(updated);
   }
 
-  /// Builds the chips that show selected items
   Widget _buildChips() {
     final validItems =
     _selectedItems
@@ -587,18 +405,8 @@ class _MultiSelectorDialogFieldViewState<V>
     );
   }
 
-  // /// Updates the current selection
-  // void _updateSelection(List<V> newSelection) {
-  //   setState(() => _selectedItems = newSelection);
-  //   widget.state.didChange(_selectedItems);
-  //   widget.onConfirm(_selectedItems);
-  //   widget.onSelectionChanged?.call(_selectedItems);
-  // }
-
-  /// Builds the field button
   Widget _buildFieldButton(BuildContext context) {
     final theme = Theme.of(context);
-    // Only show error if user has interacted or autovalidateMode allows it
     final shouldShowError = widget.state.hasError && 
         (_hasInteracted || widget.state.widget.autovalidateMode == AutovalidateMode.always);
     final isDense = widget.isDense;
@@ -624,12 +432,14 @@ class _MultiSelectorDialogFieldViewState<V>
             isDense: isDense,
             suffixIcon: widget.buttonIcon ?? const Icon(Icons.arrow_drop_down),
           ),
-          isEmpty: _selectedItems.isEmpty,
+          isEmpty: widget.buttonText?.data == null || widget.buttonText!.data!.isEmpty,
           child: InkWell(
             onTap: () => _showDialog(context),
-            child: Text(
-              widget.buttonText?.data ?? 'Select',
-              style: widget.decoration?.hintStyle ?? theme.textTheme.bodyMedium,
+            child: widget.buttonText ?? Text(
+              '',
+              style: (widget.decoration?.hintStyle ?? theme.textTheme.bodyMedium)?.copyWith(
+                color: shouldShowError ? theme.colorScheme.error : null,
+              ),
             ),
           ),
         ),
@@ -693,9 +503,7 @@ class _MultiSelectorDialogFieldViewState<V>
     );
   }
 
-  /// Shows the selection dialog
   Future<void> _showDialog(BuildContext ctx) async {
-    // Mark as interacted when user opens the dialog
     if (!_hasInteracted) {
       setState(() {
         _hasInteracted = true;
@@ -705,20 +513,17 @@ class _MultiSelectorDialogFieldViewState<V>
       barrierColor: widget.barrierColor ?? Colors.black54,
       context: context,
       builder: (ctx) {
-        final dialog = MultiSelectorDialog<V>(
-            items: widget.items,
-            initialValue: _selectedItems,
-            title: widget.title ?? Text(
-              "Select an Item",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-                color: Theme
-                    .of(context)
-                    .colorScheme
-                    .primary,
-              ),
+        return MultiSelectorDialog<V>(
+          items: widget.items,
+          initialValue: _selectedItems,
+          title: widget.title ?? Text(
+            "Select an Item",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.primary,
             ),
+          ),
           searchable: widget.searchable,
           confirmText: widget.confirmText,
           cancelText: widget.cancelText,
@@ -742,18 +547,17 @@ class _MultiSelectorDialogFieldViewState<V>
           showSelectAll: widget.showSelectAll,
           selectAllText: widget.selectAllText,
           deselectAllText: widget.deselectAllText,
+          separateSelectedItems: widget.separateSelectedItems,
+          useChipsForSelection: widget.useChipsForSelection,
           onConfirm: (selected) {
             _selectedItems = selected;
             widget.state.didChange(_selectedItems);
             widget.onConfirm(_selectedItems);
-            // Trigger validation after user interaction
             if (_hasInteracted) {
               widget.state.validate();
             }
           },
         );
-
-        return dialog;
       },
     );
   }
