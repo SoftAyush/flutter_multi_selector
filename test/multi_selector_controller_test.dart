@@ -8,9 +8,9 @@ void main() {
 
     setUp(() {
       items = [
-        MultiSelectorItem(value: '1', label: 'Apple'),
-        MultiSelectorItem(value: '2', label: 'Banana'),
-        MultiSelectorItem(value: '3', label: 'Cherry'),
+        MultiSelectorItem('1', 'Apple'),
+        MultiSelectorItem('2', 'Banana'),
+        MultiSelectorItem('3', 'Cherry'),
       ];
     });
 

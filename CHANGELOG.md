@@ -1,3 +1,31 @@
+## [1.1.0] - 2025-11-27
+
+### Added
+- **isDismissible parameter**: Control whether dialog can be dismissed by tapping outside (defaults to `true`)
+- **Positional constructor for MultiSelectorItem**: Simpler API - `MultiSelectorItem(value, label)`
+- **Named constructor for MultiSelectorItem**: Alternative syntax - `MultiSelectorItem.named(value: ..., label: ...)`
+- **copyWith method for MultiSelectorItem**: Create modified copies of items
+- **Equality operators for MultiSelectorItem**: Proper `==` and `hashCode` implementation
+- **toString method for MultiSelectorItem**: Better debugging experience
+
+### Fixed
+- **Select All with Search**: Fixed issue where "Select All" would select hidden items when searching. Now it only selects the visible (filtered) items.
+- **Validation Timing**: Fixed validation triggering immediately on build. Now it respects `AutovalidateMode` correctly (e.g., `onUserInteraction`).
+- **Error Styling**: Fixed issue where the field text color didn't change to the error color when validation failed.
+- **Form validation display**: Errors now show when form is submitted without user interaction
+- **AutovalidateMode support**: All modes work correctly (disabled, always, onUserInteraction, onUnfocus)
+
+### Changed
+- **MultiSelectorItem API**: Supports both positional and named constructors
+- **Example app**: Updated to use simpler positional constructor syntax
+
+### Migration from 1.0.x
+Fully backward compatible. Optionally simplify code:
+```dart
+// Before: MultiSelectorItem(value: 'a', label: 'A')
+// After:  MultiSelectorItem('a', 'A')
+```
+
 ## [1.0.5] - 2025-11-24
 
 ### Optimized

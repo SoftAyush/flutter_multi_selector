@@ -132,6 +132,9 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   /// Whether to use chips instead of checkboxes
   final bool useChipsForSelection;
 
+  /// Whether the user can dismiss the dialog by tapping outside
+  final bool isDismissible;
+
   /// Creates a [MultiSelectorDialogField]
   MultiSelectorDialogField({
     super.key,
@@ -172,6 +175,7 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.dialogPadding,
     this.onSelectionChanged,
     this.useChipsForSelection = false,
+    this.isDismissible = true,
     super.onSaved,
     super.validator,
     super.autovalidateMode = AutovalidateMode.disabled,
@@ -217,6 +221,7 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
         dialogPadding: dialogPadding,
         onSelectionChanged: onSelectionChanged,
         useChipsForSelection: useChipsForSelection,
+        isDismissible: isDismissible,
       );
     },
   );
@@ -262,6 +267,7 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
   final EdgeInsets? dialogPadding;
   final ValueChanged<List<V>>? onSelectionChanged;
   final bool useChipsForSelection;
+  final bool isDismissible;
 
   const _MultiSelectorDialogFieldView({
     required this.state,
@@ -302,6 +308,7 @@ class _MultiSelectorDialogFieldView<V> extends StatefulWidget {
     this.dialogPadding,
     this.onSelectionChanged,
     this.useChipsForSelection = false,
+    this.isDismissible = true,
   });
 
   @override
@@ -313,6 +320,7 @@ class _MultiSelectorDialogFieldViewState<V>
     extends State<_MultiSelectorDialogFieldView<V>> {
   late List<V> _selectedItems;
   bool _hasInteracted = false;
+  bool _shouldValidate = false;
 
   @override
   void initState() {
@@ -322,11 +330,6 @@ class _MultiSelectorDialogFieldViewState<V>
           ? widget.initialValue
           : widget.state.value ?? [],
     );
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        widget.state.didChange(_selectedItems);
-      }
-    });
   }
 
   @override
@@ -407,8 +410,12 @@ class _MultiSelectorDialogFieldViewState<V>
 
   Widget _buildFieldButton(BuildContext context) {
     final theme = Theme.of(context);
-    final shouldShowError = widget.state.hasError && 
-        (_hasInteracted || widget.state.widget.autovalidateMode == AutovalidateMode.always);
+    final autovalidateMode = widget.state.widget.autovalidateMode;
+    
+    // Check if validation was triggered (form.validate() was called)
+    // This happens when hasError is true but we haven't validated yet
+    // Determine if error should be shown based on AutovalidateMode
+    final shouldShowError = widget.state.hasError;
     final isDense = widget.isDense;
 
     if (widget.buttonBuilder != null) {
@@ -422,47 +429,56 @@ class _MultiSelectorDialogFieldViewState<V>
           decoration: widget.decoration!.copyWith(
             errorText: shouldShowError ? widget.state.errorText : null,
             errorStyle: shouldShowError ? widget.decoration?.errorStyle : null,
-            contentPadding:
-            isDense
+            contentPadding: isDense
                 ? const EdgeInsets.symmetric(
-              vertical: 8.0,
-              horizontal: 12.0,
-            )
+                    vertical: 8.0,
+                    horizontal: 12.0,
+                  )
                 : null,
             isDense: isDense,
             suffixIcon: widget.buttonIcon ?? const Icon(Icons.arrow_drop_down),
           ),
-          isEmpty: widget.buttonText?.data == null || widget.buttonText!.data!.isEmpty,
+          isEmpty: widget.buttonText?.data == null ||
+              widget.buttonText!.data!.isEmpty,
           child: InkWell(
             onTap: () => _showDialog(context),
-            child: widget.buttonText ?? Text(
-              '',
-              style: (widget.decoration?.hintStyle ?? theme.textTheme.bodyMedium)?.copyWith(
-                color: shouldShowError ? theme.colorScheme.error : null,
-              ),
-            ),
+            child: shouldShowError && widget.buttonText != null
+                ? DefaultTextStyle(
+                    style: (widget.decoration?.hintStyle ??
+                            theme.textTheme.bodyMedium)!
+                        .copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                    child: widget.buttonText!,
+                  )
+                : widget.buttonText ??
+                    Text(
+                      '',
+                      style: (widget.decoration?.hintStyle ??
+                              theme.textTheme.bodyMedium)
+                          ?.copyWith(
+                        color: shouldShowError ? theme.colorScheme.error : null,
+                      ),
+                    ),
           ),
         ),
       );
     }
 
-    final borderColor =
-    shouldShowError
+    final borderColor = shouldShowError
         ? theme.colorScheme.error
         : _selectedItems.isNotEmpty
-        ? widget.selectedColor ?? theme.primaryColor
-        : theme.dividerColor;
+            ? widget.selectedColor ?? theme.primaryColor
+            : theme.dividerColor;
 
-    final borderWidth =
-    shouldShowError
+    final borderWidth = shouldShowError
         ? 1.5
         : _selectedItems.isNotEmpty
-        ? 1.25
-        : 1.0;
+            ? 1.25
+            : 1.0;
 
     return Material(
-      shape:
-      widget.fieldShape ??
+      shape: widget.fieldShape ??
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
             side: BorderSide(color: borderColor, width: borderWidth),
@@ -470,28 +486,34 @@ class _MultiSelectorDialogFieldViewState<V>
       color: theme.cardColor,
       child: InkWell(
         borderRadius:
-        widget.fieldShape == null ? BorderRadius.circular(8) : null,
+            widget.fieldShape == null ? BorderRadius.circular(8) : null,
         onTap: () => _showDialog(context),
         child: Container(
-          padding:
-          isDense
+          padding: isDense
               ? const EdgeInsets.symmetric(horizontal: 12, vertical: 8)
               : const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              widget.buttonText ??
-                  Text(
-                    'Select',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: shouldShowError ? theme.colorScheme.error : null,
-                    ),
-                  ),
+              shouldShowError && widget.buttonText != null
+                  ? DefaultTextStyle(
+                      style: (theme.textTheme.bodyMedium)!.copyWith(
+                        color: theme.colorScheme.error,
+                      ),
+                      child: widget.buttonText!,
+                    )
+                  : widget.buttonText ??
+                      Text(
+                        'Select',
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color:
+                              shouldShowError ? theme.colorScheme.error : null,
+                        ),
+                      ),
               widget.buttonIcon ??
                   Icon(
                     Icons.arrow_drop_down,
-                    color:
-                    shouldShowError
+                    color: shouldShowError
                         ? theme.colorScheme.error
                         : theme.iconTheme.color,
                     size: isDense ? 20 : 24,
@@ -507,10 +529,12 @@ class _MultiSelectorDialogFieldViewState<V>
     if (!_hasInteracted) {
       setState(() {
         _hasInteracted = true;
+        _shouldValidate = true;
       });
     }
     await showDialog(
       barrierColor: widget.barrierColor ?? Colors.black54,
+      barrierDismissible: widget.isDismissible,
       context: context,
       builder: (ctx) {
         return MultiSelectorDialog<V>(

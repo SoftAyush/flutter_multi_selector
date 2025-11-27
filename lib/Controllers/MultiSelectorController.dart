@@ -30,7 +30,11 @@ class MultiSelectorController<T> extends ChangeNotifier {
   bool get isSearching => _isSearching;
 
   /// Returns true if all items are currently selected.
-  bool get isAllSelected => _allItems.isNotEmpty && _allItems.every((item) => _selectedValues.contains(item.value));
+  bool get isAllSelected {
+    final itemsToCheck = _isSearching ? _filteredItems : _allItems;
+    if (itemsToCheck.isEmpty) return false;
+    return itemsToCheck.every((item) => _selectedValues.contains(item.value));
+  }
 
   /// Toggles the selection state of an item.
   void toggleSelection(T value) {
@@ -45,7 +49,8 @@ class MultiSelectorController<T> extends ChangeNotifier {
 
   /// Selects all items.
   void selectAll() {
-    for (var item in _allItems) {
+    final itemsToSelect = _isSearching ? _filteredItems : _allItems;
+    for (var item in itemsToSelect) {
       _selectedValues.add(item.value);
     }
     _updateFilteredItems();
@@ -54,7 +59,13 @@ class MultiSelectorController<T> extends ChangeNotifier {
 
   /// Deselects all items.
   void deselectAll() {
-    _selectedValues.clear();
+    if (_isSearching) {
+      for (var item in _filteredItems) {
+        _selectedValues.remove(item.value);
+      }
+    } else {
+      _selectedValues.clear();
+    }
     _updateFilteredItems();
     notifyListeners();
   }
