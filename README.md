@@ -39,10 +39,11 @@ project.
 This widget shows a button that opens a multi-select dialog. It integrates with Flutter forms and
 allows selecting multiple items with optional search and select-all.
 
-```
+```dart
 MultiSelectorDialogField(
+  // Use the new simplified constructor
   items: animals
-      .map((animal) => MultiSelectorItem(value: animal, label: animal))
+      .map((animal) => MultiSelectorItem(animal, animal))
       .toList(),
   initialValue: _selectedAnimals,
   validator: (values) {
@@ -60,12 +61,20 @@ MultiSelectorDialogField(
   },
   searchable: true,
   showSelectAll: true,
+  // New in v1.1.0: Control dialog dismissal
+  isDismissible: true,
   fieldShape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(8),
     side: const BorderSide(color: Colors.grey),
   ),
 )
 ```
+
+### New in v1.1.0
+
+- **Simplified API**: `MultiSelectorItem` now supports positional arguments: `MultiSelectorItem(value, label)`.
+- **Dialog Control**: Added `isDismissible` parameter to `MultiSelectorDialogField` to control whether the dialog can be dismissed by tapping outside.
+- **Enhanced Item Handling**: `MultiSelectorItem` now includes `copyWith`, equality operators, and better `toString` support.
 
 ### Validation and Submission
 

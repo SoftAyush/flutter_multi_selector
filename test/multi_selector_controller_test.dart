@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_multi_selector/Controllers/MultiSelectorController.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
+import 'package:flutter_multi_selector/Controllers/multi_selector_controller.dart';
+import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 void main() {
   group('MultiSelectorController', () {

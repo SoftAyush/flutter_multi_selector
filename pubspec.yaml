@@ -1,6 +1,6 @@
 name: flutter_multi_selector
 description: "A customizable Flutter multi-selection dialog with search, chips/checkboxes, and Select All. Perfect for filters, settings, and forms. Supports theming and accessibility."
-version: 1.0.5
+version: 1.1.0
 homepage: https://github.com/SoftAyush/flutter_multi_selector
 repository: https://github.com/SoftAyush/flutter_multi_selector
 issue_tracker: https://github.com/SoftAyush/flutter_multi_selector/issues

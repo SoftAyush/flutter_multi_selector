@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_selector/DialogBox/MultiSelectorDialogField.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
+import 'package:flutter_multi_selector/DialogBox/multi_selector_dialog_field.dart';
+import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 void main() {
   runApp(const MyApp());

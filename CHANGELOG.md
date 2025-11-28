@@ -1,4 +1,4 @@
-## [1.1.0] - 2025-11-27
+## [1.1.0] - 2025-11-28
 
 ### Added
 - **isDismissible parameter**: Control whether dialog can be dismissed by tapping outside (defaults to `true`)
@@ -14,6 +14,7 @@
 - **Error Styling**: Fixed issue where the field text color didn't change to the error color when validation failed.
 - **Form validation display**: Errors now show when form is submitted without user interaction
 - **AutovalidateMode support**: All modes work correctly (disabled, always, onUserInteraction, onUnfocus)
+- **Import Errors**: Fixed `Target of URI doesn't exist` errors by correcting import paths to match snake_case filenames.
 
 ### Changed
 - **MultiSelectorItem API**: Supports both positional and named constructors

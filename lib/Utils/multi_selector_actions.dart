@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
+import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 /// A mixin that provides core functionality for multi-selection dialogs.
 ///

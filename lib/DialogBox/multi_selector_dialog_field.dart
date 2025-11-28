@@ -1,7 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_multi_selector/DialogBox/MultiSelectorDialog.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
+import 'package:flutter_multi_selector/DialogBox/multi_selector_dialog.dart';
+import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 /// A FormField that displays a multi-select dialog for selecting multiple values.
 ///
@@ -28,7 +28,6 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
   final ValueChanged<List<V>> onConfirm;
 
   /// The list of selected values before interaction
-  final List<V> initialValue;
 
   /// Title widget for the dialog
   final Widget? title;
@@ -151,7 +150,7 @@ class MultiSelectorDialogField<V> extends FormField<List<V>> {
     this.cancelText,
     this.searchHint,
     this.colorBuilder,
-    this.initialValue = const [],
+    List<V> initialValue = const [],
     this.separateSelectedItems = false,
     this.dialogShape,
     this.fieldShape,
@@ -320,7 +319,6 @@ class _MultiSelectorDialogFieldViewState<V>
     extends State<_MultiSelectorDialogFieldView<V>> {
   late List<V> _selectedItems;
   bool _hasInteracted = false;
-  bool _shouldValidate = false;
 
   @override
   void initState() {
@@ -410,7 +408,6 @@ class _MultiSelectorDialogFieldViewState<V>
 
   Widget _buildFieldButton(BuildContext context) {
     final theme = Theme.of(context);
-    final autovalidateMode = widget.state.widget.autovalidateMode;
     
     // Check if validation was triggered (form.validate() was called)
     // This happens when hasError is true but we haven't validated yet
@@ -529,7 +526,6 @@ class _MultiSelectorDialogFieldViewState<V>
     if (!_hasInteracted) {
       setState(() {
         _hasInteracted = true;
-        _shouldValidate = true;
       });
     }
     await showDialog(

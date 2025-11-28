@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_multi_selector/DialogBox/MultiSelectorDialog.dart';
-import 'package:flutter_multi_selector/Utils/MultiSelectorItem.dart';
+import 'package:flutter_multi_selector/DialogBox/multi_selector_dialog.dart';
+import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 void main() {
   group('MultiSelectorDialog', () {

@@ -1,4 +1,4 @@
-export 'Utils/MultiSelectorActions.dart';
-export 'Utils/MultiSelectorItem.dart';
-export 'DialogBox/MultiSelectorDialog.dart';
-export 'DialogBox/MultiSelectorDialogField.dart';
+export 'Utils/multi_selector_actions.dart';
+export 'Utils/multi_selector_item.dart';
+export 'DialogBox/multi_selector_dialog.dart';
+export 'DialogBox/multi_selector_dialog_field.dart';
