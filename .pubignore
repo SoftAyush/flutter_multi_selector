@@ -1,0 +1,17 @@
+# .pubignore
+
+# These files/folders are tracked in Git (for GitHub Pages hosting)
+# but should NOT be included in the published package on pub.dev.
+
+doc/
+example/
+test/
+.github/
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.dart_tool/
+build/
+pubspec.lock
