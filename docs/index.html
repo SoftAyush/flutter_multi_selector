@@ -571,7 +571,7 @@
     <div class="header-logo">
       <i class="fas fa-layer-group"></i>
       <span>flutter_multi_selector</span>
-      <span class="header-badge" id="version-badge">v1.2.0</span>
+      <span class="header-badge" id="version-badge">latest</span>
     </div>
     <div class="header-actions">
       <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
@@ -618,10 +618,26 @@
         A powerful, highly customizable Flutter package for multi-item selection.
         Supports <strong>Dialog</strong> and <strong>BottomSheet</strong> modes with zero effort.
       </p>
+      <p>
+        Building complex selection interfaces shouldn't be a chore. <code>flutter_multi_selector</code> provides a
+        consistent, high-performance API for handling multi-choice data in your Flutter apps. Whether you need a
+        simple checkbox list in a dialog or a modern, searchable bottom sheet with custom chip styling, this
+        package handles the heavy lifting—including state management, filtering, and form validation.
+      </p>
+      <p>
+        <strong>Why choose this package?</strong>
+      </p>
+      <ul style="margin-left: 20px; margin-bottom: 24px; color: var(--text-muted);">
+        <li>🚀 <strong>Developer First:</strong> Set up a full selection flow in under 10 lines of code.</li>
+        <li>✨ <strong>Native Feel:</strong> Follows Material 3 design principles for a premium user experience.</li>
+        <li>🔍 <strong>Scalable:</strong> Optimized to handle hundreds of items with smooth 60fps scrolling and
+          searching.</li>
+        <li>🛠️ <strong>Flexible:</strong> Control everything from dialog shapes to per-item color schemes.</li>
+      </ul>
       <div class="callout">
         <i class="fas fa-check-circle"></i>
         <div class="callout-content">
-          <p><strong>Stable Version:</strong> <span id="current-version">1.2.0</span> &nbsp;|&nbsp;
+          <p><strong>Stable Version:</strong> <span id="current-version">latest</span> &nbsp;|&nbsp;
             <strong>SDK:</strong> Flutter &gt;= 3.27.0 &nbsp;|&nbsp; <strong>Null Safety:</strong> Guaranteed
           </p>
         </div>
@@ -639,7 +655,7 @@
           <h3>Install the Package</h3>
           <p>Add the line to your <code>pubspec.yaml</code> and run <code>flutter pub get</code>.</p>
           <pre data-lang="yaml">dependencies:
-  flutter_multi_selector: ^1.2.0</pre>
+  flutter_multi_selector: latest</pre>
         </div>
       </div>
 
@@ -714,7 +730,7 @@
       <p>Add the package to your <code>pubspec.yaml</code> dependencies:</p>
       <pre data-lang="yaml">
 dependencies:
-  flutter_multi_selector: ^1.2.0</pre>
+  flutter_multi_selector: latest</pre>
     </section>
 
     <section id="dialog">
@@ -945,11 +961,8 @@ MultiSelectorBottomSheetField&lt;String&gt;(
       </table>
     </section>
 
-    <section id="license" style="text-align: center; border-top: 1px solid var(--border); padding-top: 64px;">
+    <footer id="license">
       <p>Licensed under the <strong>MIT License</strong></p>
-    </section>
-
-    <footer>
       <p style="margin-top: 16px; font-size: 14px; color: var(--text-light); font-weight: 500;">
         Made with <i class="fas fa-heart" style="color:#ef4444"></i> by
         <a href="https://ayushtimalsina.com.np/" target="_blank"
@@ -995,8 +1008,8 @@ MultiSelectorBottomSheetField&lt;String&gt;(
         document.getElementById('version-badge').textContent = 'v' + version;
         document.getElementById('current-version').textContent = version;
       } catch (e) {
-        document.getElementById('version-badge').textContent = 'v1.2.0';
-        document.getElementById('current-version').textContent = '1.2.0';
+        document.getElementById('version-badge').textContent = 'latest';
+        document.getElementById('current-version').textContent = 'latest';
       }
     }
     fetchVersion();
