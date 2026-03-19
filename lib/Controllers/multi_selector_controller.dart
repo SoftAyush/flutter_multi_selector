@@ -90,9 +90,9 @@ class MultiSelectorController<T> extends ChangeNotifier {
   /// Updates the internal list of filtered items based on search and separation logic.
   void _updateFilteredItems() {
     // 1. Filter by search query
-    List<MultiSelectorItem<T>> tempItems;
+    final List<MultiSelectorItem<T>> tempItems;
     if (_searchQuery.isEmpty) {
-      tempItems = List.from(_allItems);
+      tempItems = _allItems;
     } else {
       final query = _searchQuery.toLowerCase();
       tempItems = _allItems.where((item) {
@@ -129,5 +129,11 @@ class MultiSelectorController<T> extends ChangeNotifier {
     } else {
       _filteredItems = tempItems;
     }
+  }
+
+  @override
+  void dispose() {
+    _filteredItems = [];
+    super.dispose();
   }
 }

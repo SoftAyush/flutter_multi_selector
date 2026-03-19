@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>flutter_multi_selector — Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      /* Light Mode */
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --primary-bg: #f5f3ff;
+      --bg: #ffffff;
+      --bg-alt: #f8fafc;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+      --success: #10b981;
+      --code-bg: #1e1e2e;
+      --code-text: #cdd6f4;
+      --header-bg: rgba(255, 255, 255, 0.85);
+      --sidebar-bg: #fff;
+    }
+
+    [data-theme="dark"] {
+      --primary: #818cf8;
+      --primary-hover: #6366f1;
+      --primary-bg: #1e1b4b;
+      --bg: #0f172a;
+      --bg-alt: #020617;
+      --surface: #1e293b;
+      --border: #334155;
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-light: #64748b;
+      --header-bg: rgba(15, 23, 42, 0.85);
+      --sidebar-bg: #1e293b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg-alt);
+      line-height: 1.6;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* ── Header ── */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 72px;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      padding: 0 32px;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+    }
+
+    .header-logo {
+      font-weight: 800;
+      font-size: 20px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .header-logo i {
+      font-size: 24px;
+    }
+
+    .header-badge {
+      background: var(--primary-bg);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-left: 12px;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .header-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .header-actions a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    .header-actions a:hover {
+      color: var(--primary);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff !important;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      position: fixed;
+      top: 72px;
+      left: 0;
+      bottom: 0;
+      width: 280px;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border);
+      padding: 32px 0;
+      overflow-y: auto;
+      z-index: 50;
+    }
+
+    .sidebar-group {
+      padding: 0 24px;
+      margin-bottom: 32px;
+    }
+
+    .sidebar-group h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-light);
+      margin-bottom: 12px;
+      font-weight: 800;
+    }
+
+    .sidebar a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 24px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+      border-left: 4px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .sidebar a i {
+      width: 18px;
+      text-align: center;
+      font-size: 16px;
+      opacity: 0.7;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+      color: var(--primary);
+      background: var(--primary-bg);
+      border-left-color: var(--primary);
+    }
+
+    /* ── Main ── */
+    .main {
+      margin-left: 280px;
+      margin-top: 72px;
+      padding: 48px 64px 80px;
+      max-width: 1000px;
+    }
+
+    section {
+      margin-bottom: 64px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 0.5s ease forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+
+    h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin: 48px 0 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      letter-spacing: -0.5px;
+    }
+
+    h3 {
+      font-size: 20px;
+      font-weight: 700;
+      margin: 32px 0 16px;
+    }
+
+    p {
+      margin-bottom: 18px;
+      color: var(--text-muted);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .hero-subtitle {
+      font-size: 20px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      font-weight: 500;
+    }
+
+    /* ── Cards ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary-light);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+    }
+
+    .card .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--primary-bg);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+
+    .card h4 {
+      font-size: 18px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .card p {
+      font-size: 14px;
+      margin: 0;
+      color: var(--text-muted);
+    }
+
+    /* ── Code ── */
+    pre {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 16px;
+      padding: 24px;
+      overflow-x: auto;
+      font-family: 'Fira Code', monospace;
+      font-size: 14px;
+      position: relative;
+      margin: 24px 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    pre::after {
+      content: attr(data-lang);
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 10px;
+      text-transform: uppercase;
+      font-family: sans-serif;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    code {
+      font-family: 'Fira Code', monospace;
+    }
+
+    p code {
+      background: var(--primary-bg);
+      color: var(--primary);
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+
+    /* ── Tables ── */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      margin: 24px 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th {
+      background: var(--bg-alt);
+      text-align: left;
+      padding: 16px;
+      font-weight: 700;
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ── Callout ── */
+    .callout {
+      display: flex;
+      gap: 16px;
+      background: var(--primary-bg);
+      padding: 20px 24px;
+      border-radius: 16px;
+      border-left: 6px solid var(--primary);
+      margin: 32px 0;
+    }
+
+    .callout i {
+      color: var(--primary);
+      font-size: 20px;
+      margin-top: 2px;
+    }
+
+    .callout-content p {
+      margin: 0;
+      color: var(--text);
+      font-size: 15px;
+    }
+
+    /* ── Steps ── */
+    .step {
+      margin-bottom: 40px;
+      display: flex;
+      gap: 24px;
+    }
+
+    .step-number {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 18px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    /* ── Screenshots ── */
+    .screenshot-row {
+      display: flex;
+      gap: 24px;
+      margin: 32px 0;
+      flex-wrap: wrap;
+    }
+
+    .screenshot-item {
+      flex: 1;
+      min-width: 300px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 16px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .screenshot-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .screenshot-item img {
+      width: 100%;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .screenshot-item span {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    /* ── Footer / Maintainer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 64px 0 40px;
+      margin-top: 80px;
+      text-align: center;
+    }
+
+    .maintainer-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 24px;
+      border-radius: 99px;
+      font-size: 15px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .maintainer-line:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+
+    .maintainer-label {
+      color: var(--text-light);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+
+    .maintainer-name {
+      color: var(--text);
+      font-weight: 800;
+    }
+
+    .maintainer-separator {
+      color: var(--border);
+    }
+
+    .maintainer-url {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .maintainer-url:hover {
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .sidebar {
+        width: 0;
+        transform: translateX(-100%);
+        transition: 0.3s;
+      }
+
+      .sidebar.open {
+        width: 280px;
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+        padding: 40px 24px;
+      }
+
+      header {
+        padding: 0 20px;
+      }
+
+      .maintainer-line {
+        flex-direction: column;
+        gap: 4px;
+        border-radius: 20px;
+        padding: 16px 32px;
+      }
+
+      .maintainer-separator {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+
+  <header>
+    <button class="theme-toggle" style="margin-right: 16px;"
+      onclick="document.querySelector('.sidebar').classList.toggle('open')">
+      <i class="fas fa-bars"></i>
+    </button>
+    <div class="header-logo">
+      <i class="fas fa-layer-group"></i>
+      <span>flutter_multi_selector</span>
+      <span class="header-badge" id="version-badge">v1.2.0</span>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
+        <i class="fas fa-moon"></i>
+      </button>
+      <a href="https://github.com/SoftAyush/flutter_multi_selector" target="_blank" class="mobile-hide">
+        <i class="fab fa-github"></i>
+      </a>
+      <a href="https://pub.dev/packages/flutter_multi_selector" target="_blank" class="btn-primary">
+        Get Started
+      </a>
+    </div>
+  </header>
+
+  <nav class="sidebar">
+    <div class="sidebar-group">
+      <h4>Getting Started</h4>
+      <a href="#overview"><i class="fas fa-eye"></i> Overview</a>
+      <a href="#beginner-guide"><i class="fas fa-baby"></i> Beginner's Guide</a>
+      <a href="#features"><i class="fas fa-star"></i> Features</a>
+      <a href="#installation"><i class="fas fa-download"></i> Installation</a>
+    </div>
+    <div class="sidebar-group">
+      <h4>Usage</h4>
+      <a href="#dialog"><i class="fas fa-window-maximize"></i> Dialog Field</a>
+      <a href="#bottomsheet"><i class="fas fa-arrow-up"></i> BottomSheet Field</a>
+      <a href="#validation"><i class="fas fa-shield-check"></i> Validation</a>
+    </div>
+    <div class="sidebar-group">
+      <h4>Visuals</h4>
+      <a href="#screenshots"><i class="fas fa-camera"></i> Screenshots Gallery</a>
+    </div>
+    <div class="sidebar-group">
+      <h4>Reference</h4>
+      <a href="#api"><i class="fas fa-book"></i> Detailed API</a>
+      <a href="#license"><i class="fas fa-file-contract"></i> License</a>
+    </div>
+  </nav>
+
+  <div class="main">
+    <section id="overview">
+      <h1>Flutter Multi Selector</h1>
+      <p class="hero-subtitle">
+        A powerful, highly customizable Flutter package for multi-item selection.
+        Supports <strong>Dialog</strong> and <strong>BottomSheet</strong> modes with zero effort.
+      </p>
+      <div class="callout">
+        <i class="fas fa-check-circle"></i>
+        <div class="callout-content">
+          <p><strong>Stable Version:</strong> <span id="current-version">1.2.0</span> &nbsp;|&nbsp;
+            <strong>SDK:</strong> Flutter &gt;= 3.27.0 &nbsp;|&nbsp; <strong>Null Safety:</strong> Guaranteed
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Beginner's Guide Section -->
+    <section id="beginner-guide">
+      <h2>Beginner's Guide 🐣</h2>
+      <p>New to Flutter? This step-by-step guide will help you get started in minutes.</p>
+
+      <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+          <h3>Install the Package</h3>
+          <p>Add the line to your <code>pubspec.yaml</code> and run <code>flutter pub get</code>.</p>
+          <pre data-lang="yaml">dependencies:
+  flutter_multi_selector: ^1.2.0</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+          <h3>Prepare Your Data</h3>
+          <p>Use the <code>MultiSelectorItem</code> class to wrap your data. It needs a <strong>Value</strong> (for
+            code) and a <strong>Label</strong> (for user).</p>
+          <pre data-lang="dart">final items = ["Apple", "Banana"].map((e) => MultiSelectorItem(e, e)).toList();</pre>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+          <h3>Choose Your Style</h3>
+          <p>Pick the UI that fits your app best. Dialog for classic focus, BottomSheet for modern mobile UX.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+          <h3>Add Extra Power</h3>
+          <p>Turn on <code>searchable: true</code> for long lists or <code>showSelectAll: true</code> for bulk
+            selection.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-number">5</div>
+        <div class="step-content">
+          <h3>Manage the State</h3>
+          <p>Create a list variable and update it inside <code>setState</code> when the user confirms their selection.
+          </p>
+          <pre data-lang="dart">onConfirm: (values) {
+  setState(() => _selected = values);
+}</pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="features">
+      <h2>Powerful Features</h2>
+      <div class="feature-grid">
+        <div class="card">
+          <div class="icon"><i class="fas fa-mobile"></i></div>
+          <h4>BottomSheet Support</h4>
+          <p>Material 3 compliant bottom sheets with drag handles and smooth slide animations.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><i class="fas fa-search"></i></div>
+          <h4>Smart Search</h4>
+          <p>Ultra-responsive real-time filtering even with thousands of items in the list.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><i class="fas fa-check-double"></i></div>
+          <h4>Select All / Clear All</h4>
+          <p>Add bulk selection with a single flag. Smart toggle only affects visible search results.</p>
+        </div>
+        <div class="card">
+          <div class="icon"><i class="fas fa-paint-brush"></i></div>
+          <h4>Custom UI Themes</h4>
+          <p>Override every pixel from colors and fonts to the shape of the dialog and chips.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="installation">
+      <h2>Installation</h2>
+      <p>Add the package to your <code>pubspec.yaml</code> dependencies:</p>
+      <pre data-lang="yaml">
+dependencies:
+  flutter_multi_selector: ^1.2.0</pre>
+    </section>
+
+    <section id="dialog">
+      <h2>MultiSelectorDialogField</h2>
+      <p>Traditional centered dialog. Best for larger screens or dedicated focus on selection.</p>
+      <pre data-lang="dart">
+MultiSelectorDialogField&lt;String&gt;(
+  items: animals.map((e) => MultiSelectorItem(e, e)).toList(),
+  initialValue: _selectedAnimals,
+  title: const Text("Select Animals"),
+  searchable: true,
+  decoration: const InputDecoration(
+    labelText: "Animals",
+    prefixIcon: Icon(Icons.pets),
+  ),
+  onConfirm: (values) {
+    setState(() => _selectedAnimals = values);
+  },
+)</pre>
+    </section>
+
+    <section id="bottomsheet">
+      <h2>MultiSelectorBottomSheetField</h2>
+      <p>Modern bottom sheet interaction. Recommended for mobile apps following Material 3 guidelines.</p>
+      <pre data-lang="dart">
+MultiSelectorBottomSheetField&lt;String&gt;(
+  items: countries.map((e) => MultiSelectorItem(e, e)).toList(),
+  title: const Text("Select Countries"),
+  searchable: true,
+  showSelectAll: true,
+  heightFraction: 0.65, // Occupy 65% of screen height
+  onConfirm: (values) {
+    setState(() => _selectedCountries = values);
+  },
+)</pre>
+    </section>
+
+    <section id="validation">
+      <h2>Form Validation</h2>
+      <p>Both fields integrate perfectly with Flutter's <code>Form</code> system. Use the <code>validator</code>
+        property just like you would with a <code>TextFormField</code>.</p>
+      <pre data-lang="dart">
+MultiSelectorBottomSheetField&lt;String&gt;(
+  items: fruits,
+  validator: (values) {
+    if (values == null || values.isEmpty) {
+      return "Please select at least one item";
+    }
+    if (values.length > 3) {
+      return "Max 3 items allowed";
+    }
+    return null;
+  },
+  autovalidateMode: AutovalidateMode.onUserInteraction,
+  onConfirm: (values) => setState(() => _selected = values),
+)</pre>
+    </section>
+
+    <!-- Screenshots Section -->
+    <section id="screenshots">
+      <h2>Gallery & Visuals 📸</h2>
+      <p>High-quality previews of the package in action across different modes.</p>
+
+      <div class="screenshot-row">
+        <div class="screenshot-item">
+          <img src="img/dialog_list.jpeg" alt="Dialog List Mode">
+          <span>Dialog &bullet; Vertical List</span>
+        </div>
+        <div class="screenshot-item">
+          <img src="img/dialog_chip.jpeg" alt="Dialog Chip Mode">
+          <span>Dialog &bullet; Wrap Chips</span>
+        </div>
+      </div>
+
+      <div class="screenshot-row">
+        <div class="screenshot-item">
+          <img src="img/bottomsheet_list.jpeg" alt="BottomSheet List Mode">
+          <span>BottomSheet &bullet; Vertical List</span>
+        </div>
+        <div class="screenshot-item">
+          <img src="img/bottomsheet_chip.jpeg" alt="BottomSheet Chip Mode">
+          <span>BottomSheet &bullet; Wrap Chips</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="api">
+      <h2>Detailed API Reference</h2>
+      <p>The <code>MultiSelectorDialogField</code> and <code>MultiSelectorBottomSheetField</code> share most parameters
+        for a consistent experience.</p>
+
+      <h3>Primary Parameters</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>items</td>
+              <td>List&lt;MultiSelectorItem&lt;T&gt;&gt;</td>
+              <td><strong>Required.</strong> The data to display.</td>
+            </tr>
+            <tr>
+              <td>onConfirm</td>
+              <td>ValueChanged&lt;List&lt;V&gt;&gt;</td>
+              <td><strong>Required.</strong> Callback when user taps the finish button.</td>
+            </tr>
+            <tr>
+              <td>initialValue</td>
+              <td>List&lt;V&gt;</td>
+              <td>Pre-selected items on load.</td>
+            </tr>
+            <tr>
+              <td>title</td>
+              <td>Widget?</td>
+              <td>Header title for the selection view.</td>
+            </tr>
+            <tr>
+              <td>searchable</td>
+              <td>bool</td>
+              <td>Show search bar. Default: <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td>showSelectAll</td>
+              <td>bool</td>
+              <td>Show Select/Clear All button. Default: <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td>useChipsForSelection</td>
+              <td>bool</td>
+              <td>Use Chip grid instead of Checkbox list. Default: <code>false</code>.</td>
+            </tr>
+            <tr>
+              <td>separateSelectedItems</td>
+              <td>bool</td>
+              <td>Group selected items at the top. Default: <code>false</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Styling & UX</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Parameter</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>colorBuilder</td>
+              <td>Color Function(T)?</td>
+              <td>Map individual values to custom colors.</td>
+            </tr>
+            <tr>
+              <td>selectedColor</td>
+              <td>Color?</td>
+              <td>Base color for selection state.</td>
+            </tr>
+            <tr>
+              <td>backgroundColor</td>
+              <td>Color?</td>
+              <td>Dialog/Sheet background color.</td>
+            </tr>
+            <tr>
+              <td>fieldShape</td>
+              <td>ShapeBorder?</td>
+              <td>Custom shape for the input field.</td>
+            </tr>
+            <tr>
+              <td>decoration</td>
+              <td>InputDecoration?</td>
+              <td>Appearance of the field (label, hint, icon).</td>
+            </tr>
+            <tr>
+              <td>heightFraction</td>
+              <td>double?</td>
+              <td>(BottomSheet only) Screen height occupied (0.0 to 1.0). Default: <code>0.6</code>.</td>
+            </tr>
+            <tr>
+              <td>showDragHandle</td>
+              <td>bool</td>
+              <td>(BottomSheet only) Show M3 drag handle. Default: <code>true</code>.</td>
+            </tr>
+            <tr>
+              <td>isDismissible</td>
+              <td>bool</td>
+              <td>Allow dismissing by tapping outside. Default: <code>true</code>.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>MultiSelectorItem&lt;T&gt;</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Property</th>
+            <th>Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>value</td>
+            <td>T</td>
+            <td>The raw data value.</td>
+          </tr>
+          <tr>
+            <td>label</td>
+            <td>String</td>
+            <td>The text displayed to the user.</td>
+          </tr>
+          <tr>
+            <td>selected</td>
+            <td>bool</td>
+            <td>Internal selection state.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="license" style="text-align: center; border-top: 1px solid var(--border); padding-top: 64px;">
+      <p>Licensed under the <strong>MIT License</strong></p>
+    </section>
+
+    <footer>
+      <p style="margin-top: 16px; font-size: 14px; color: var(--text-light); font-weight: 500;">
+        Made with <i class="fas fa-heart" style="color:#ef4444"></i> by
+        <a href="https://ayushtimalsina.com.np/" target="_blank"
+          style="color:var(--primary); text-decoration:none; font-weight:700;">Ayush Timalsina</a>
+        for the Flutter Community &copy; <span id="year"></span>
+      </p>
+    </footer>
+
+
+  </div>
+
+  <script>
+    // Set dynamic year
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Theme Management
+    function toggleTheme() {
+      const body = document.body;
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const icon = document.querySelector('#theme-btn i');
+      icon.className = theme === 'light' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') ||
+      (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    // Fetch Version from Pub.dev
+    async function fetchVersion() {
+      try {
+        const response = await fetch('https://pub.dev/api/packages/flutter_multi_selector');
+        const data = await response.json();
+        const version = data.latest.version;
+        document.getElementById('version-badge').textContent = 'v' + version;
+        document.getElementById('current-version').textContent = version;
+      } catch (e) {
+        document.getElementById('version-badge').textContent = 'v1.2.0';
+        document.getElementById('current-version').textContent = '1.2.0';
+      }
+    }
+    fetchVersion();
+
+    // Smooth Scrolling
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+        // Update active link
+        document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+        const activeLink = document.querySelector(`.sidebar a[href="${this.getAttribute('href')}"]`);
+        if (activeLink) activeLink.classList.add('active');
+
+        // Close mobile sidebar if open
+        document.querySelector('.sidebar').classList.remove('open');
+      });
+    });
+  </script>
+
+</body>
+
+</html>

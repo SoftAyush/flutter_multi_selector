@@ -250,7 +250,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
   }
 
   /// Builds a chip-style selectable item
-  Widget _buildChipItem(MultiSelectorItem<T> item) {
+  Widget _buildChipItem(MultiSelectorItem<T> item, ThemeData theme) {
     final isSelected = item.selected;
     final color = widget.colorBuilder?.call(item.value) ?? widget.selectedColor;
 
@@ -263,16 +263,16 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
           style:
               isSelected
                   ? widget.selectedItemsTextStyle?.copyWith(
-                        color: color ?? Theme.of(context).primaryColor,
+                        color: color ?? theme.primaryColor,
                       ) ??
                       TextStyle(
-                        color: color ?? Theme.of(context).primaryColor,
+                        color: color ?? theme.primaryColor,
                         fontWeight: FontWeight.bold,
                       )
                   : widget.itemsTextStyle,
         ),
         selectedColor: color?.withAlpha(51),
-        backgroundColor: widget.unselectedColor ?? Colors.grey.shade200,
+        backgroundColor: widget.unselectedColor ?? theme.colorScheme.surfaceContainerHighest,
         onSelected: (checked) => _controller.toggleSelection(item.value),
       ),
     );
@@ -280,6 +280,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
 
   /// Builds the search input field
   Widget _buildSearchField() {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 2.0),
       child: TextField(
@@ -288,30 +289,30 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
         autofocus: true,
         style:
             widget.searchTextStyle ??
-            const TextStyle(fontSize: 16, color: Colors.black87),
+            TextStyle(fontSize: 16, color: theme.colorScheme.onSurface),
         decoration: InputDecoration(
           hintText: widget.searchHint ?? "Search...",
           hintStyle:
               widget.searchHintStyle ??
-              const TextStyle(color: Colors.grey, fontSize: 16),
+              TextStyle(color: theme.hintColor, fontSize: 16),
           prefixIcon:
-              widget.searchIcon ?? const Icon(Icons.search, color: Colors.grey),
+              widget.searchIcon ?? Icon(Icons.search, color: theme.hintColor),
           contentPadding: const EdgeInsets.symmetric(
             vertical: 12,
             horizontal: 16,
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderSide: BorderSide(color: theme.dividerColor),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(color: Colors.grey.shade400),
+            borderSide: BorderSide(color: theme.dividerColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(
-              color: Theme.of(context).primaryColor,
+              color: theme.primaryColor,
               width: 2,
             ),
           ),
@@ -429,7 +430,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
             "No items found",
             style: Theme.of(
               context,
-            ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+            ).textTheme.bodyLarge?.copyWith(color: Theme.of(context).hintColor),
           ),
         ),
       );
@@ -444,15 +445,14 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
 
   /// Builds the scrollable chip content (chip mode)
   Widget _buildChipContent() {
+    final theme = Theme.of(context);
     if (_controller.items.isEmpty) {
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
             "No items found",
-            style: Theme.of(
-              context,
-            ).textTheme.bodyLarge?.copyWith(color: Colors.grey),
+            style: theme.textTheme.bodyLarge?.copyWith(color: theme.hintColor),
           ),
         ),
       );
@@ -463,7 +463,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
       child: Wrap(
         spacing: 8.0,
         runSpacing: 8.0,
-        children: _controller.items.map(_buildChipItem).toList(),
+        children: _controller.items.map((item) => _buildChipItem(item, theme)).toList(),
       ),
     );
   }

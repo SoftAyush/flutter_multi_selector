@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_selector/DialogBox/multi_selector_dialog_field.dart';
+import 'package:flutter_multi_selector/BottomSheet/multi_selector_bottom_sheet_field.dart';
 import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 void main() {
@@ -53,10 +54,22 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
     "Work", "Personal", "Urgent", "Later", "Done", "Meeting", "Review"
   ];
 
+  final List<String> countries = [
+    "Nepal", "India", "Japan", "USA", "UK",
+    "Germany", "France", "Australia", "Canada", "Brazil"
+  ];
+
+  final List<String> skills = [
+    "Flutter", "Dart", "React", "Node.js", "Python",
+    "Firebase", "Docker", "Kubernetes", "AWS", "GraphQL"
+  ];
+
   // State Variables
   List<String> _selectedAnimals = [];
   List<String> _selectedFruits = [];
   List<String> _selectedTags = [];
+  List<String> _selectedCountries = [];
+  List<String> _selectedSkills = [];
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +85,8 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 _selectedAnimals = [];
                 _selectedFruits = [];
                 _selectedTags = [];
+                _selectedCountries = [];
+                _selectedSkills = [];
                 _formKey.currentState?.reset();
               });
             },
@@ -180,6 +195,76 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 },
               ),
 
+              const SizedBox(height: 32),
+
+              // ---------------------------------------------------------
+              // Example 4: BottomSheet with Search & Select All
+              // ---------------------------------------------------------
+              _buildSectionHeader(
+                '4. BottomSheet — Searchable List',
+                'Opens a bottom sheet instead of a dialog. Includes drag handle, search, and select all.',
+              ),
+              MultiSelectorBottomSheetField<String>(
+                items: countries.map((e) => MultiSelectorItem(e, e)).toList(),
+                initialValue: _selectedCountries,
+                title: const Text("Select Countries"),
+                searchable: true,
+                showSelectAll: true,
+                selectAllText: "Select All",
+                clearAllText: "Clear All",
+                decoration: const InputDecoration(
+                  labelText: "Countries",
+                  prefixIcon: Icon(Icons.public),
+                  hintText: "Choose countries",
+                ),
+                validator: (values) {
+                  if (values == null || values.isEmpty) {
+                    return "Please select at least one country";
+                  }
+                  return null;
+                },
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                onConfirm: (values) {
+                  setState(() => _selectedCountries = values);
+                },
+              ),
+
+              const SizedBox(height: 32),
+
+              // ---------------------------------------------------------
+              // Example 5: BottomSheet with Chips & Color Builder
+              // ---------------------------------------------------------
+              _buildSectionHeader(
+                '5. BottomSheet — Chip Mode & Colors',
+                'Chip-based selection in a bottom sheet with per-item colors.',
+              ),
+              MultiSelectorBottomSheetField<String>(
+                items: skills.map((e) => MultiSelectorItem(e, e)).toList(),
+                initialValue: _selectedSkills,
+                title: const Text("Select Skills"),
+                useChipsForSelection: true,
+                separateSelectedItems: true,
+                heightFraction: 0.55,
+                decoration: const InputDecoration(
+                  labelText: "Skills",
+                  prefixIcon: Icon(Icons.code),
+                ),
+                colorBuilder: (value) {
+                  switch (value) {
+                    case "Flutter": return Colors.blue;
+                    case "Dart": return Colors.teal;
+                    case "React": return Colors.cyan;
+                    case "Firebase": return Colors.orange;
+                    case "Python": return Colors.green;
+                    case "Docker": return Colors.indigo;
+                    default: return Colors.deepPurple;
+                  }
+                },
+                onConfirm: (values) {
+                  setState(() => _selectedSkills = values);
+                },
+              ),
+
               const SizedBox(height: 48),
 
               // ---------------------------------------------------------
@@ -268,6 +353,8 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
             _buildResultRow("Animals", _selectedAnimals),
             _buildResultRow("Fruits", _selectedFruits),
             _buildResultRow("Tags", _selectedTags),
+            _buildResultRow("Countries", _selectedCountries),
+            _buildResultRow("Skills", _selectedSkills),
           ],
         ),
         actions: [

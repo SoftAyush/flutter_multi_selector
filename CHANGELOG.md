@@ -1,3 +1,46 @@
+## [1.2.0] - 2026-03-19
+
+### ✨ Features
+- **MultiSelectorBottomSheet**: New bottom sheet selection dialog with Material 3 styling
+  - Drag handle at the top for intuitive interaction
+  - Rounded top corners (20px radius)
+  - Built-in search with filled text field and clear button
+  - Select All / Clear All toggle with contextual icons
+  - Checkbox and chip selection modes (`useChipsForSelection`)
+  - Empty state with icon + text
+  - Configurable height via `heightFraction` (defaults to 60%)
+  - Done (FilledButton) and Cancel (OutlinedButton) action buttons
+- **MultiSelectorBottomSheetField**: FormField wrapper for the bottom sheet
+  - Full form validation support (`validator`, `autovalidateMode`)
+  - Deletable chip display below the field
+  - `isDismissible` and `enableDrag` parameters
+  - Custom `buttonBuilder` support
+  - All styling parameters from `MultiSelectorDialogField`
+
+### 🐛 Fixes
+- **Chip rebuild bug**: Fixed missing `setState` in `MultiSelectorDialogField` — chips now properly rebuild after dialog closes
+- **Memory allocation**: Fixed `ListEquality()` being allocated on every list comparison call; now uses `listEquals` from `foundation.dart`
+
+### 🔧 Improvements
+- **Removed `collection` dependency**: Replaced `firstWhereOrNull` with a manual null-safe lookup, reducing package footprint
+- **Removed dead code**: Deleted unused `MultiSelectorActions` mixin (126 lines)
+- **Dark mode support**: Replaced hardcoded colors (`Colors.black87`, `Colors.grey`, etc.) with theme-aware alternatives (`theme.hintColor`, `theme.dividerColor`, `theme.colorScheme.onSurface`)
+- **Performance**: Avoided unnecessary `List.from()` copy in controller when search is empty
+- **Performance**: Resolved `Theme.of(context)` once per build instead of per list item
+- **Controller cleanup**: Added proper `dispose()` override to `MultiSelectorController`
+- **Example app**: Added two new BottomSheet examples (searchable list + chip mode with colors)
+
+### ⚠️ Breaking Changes
+- Removed `MultiSelectorActions` mixin from public API (was never used internally)
+- Removed `collection` dependency — consumers relying on it transitively should add it directly
+
+### Migration from 1.1.x
+- If you imported `MultiSelectorActions`, remove the import (the mixin was unused)
+- If you depended on `collection` transitively, add it to your own `pubspec.yaml`
+- All other APIs remain backward compatible
+
+---
+
 ## [1.1.0] - 2025-11-28
 
 ### Added
@@ -48,19 +91,13 @@ Fully backward compatible. Optionally simplify code:
   - Resolves issue where validation errors were shown prematurely
 - **User interaction tracking**: Implemented proper interaction state management for validation timing
 
-### Technical Details
-- Added `_hasInteracted` boolean to track user interaction state
-- Updated error display logic to consider both validation state and interaction history
-- Modified border colors, text colors, and icon colors to respect interaction-based validation
-- Enhanced validation trigger logic for better user experience
-
-## [1.0.3] -  2025-08-1
+## [1.0.3] - 2025-08-01
 
 ### Fixes
-- when selected then auto back bug fix
-- Enhance and optimized the code
+- Fixed auto-back bug when item selected
+- Enhanced and optimized code
 
-## [1.0.2] -  2025-08-1
+## [1.0.2] - 2025-08-01
 
 ### Fixes
 - Fixed dialog constraints: Resolved BoxConstraints normalization error by ensuring minWidth ≤ maxWidth
@@ -69,17 +106,12 @@ Fully backward compatible. Optionally simplify code:
 - Elevation: Ensured dialogElevation is correctly passed to the Dialog widget
 - State management: Improved handling of initialValue updates
 
-
-## [1.0.1] -  2025-06-19
+## [1.0.1] - 2025-06-19
 
 ### Fixed
 - Duplicate values in MultiSelect: Resolved an issue where selected items appeared multiple times
 - Spacing issue: Fixed unwanted additional spacing below the MultiSelect widget
 - State initialization: Improved handling of `initialValue` and `state.value` to prevent conflicts
-
-### Changed
-- Optimized internal item selection logic to prevent duplicates
-- Adjusted widget padding and layout constraints
 
 ### Notes
 - Backward compatible with v1.0.0
@@ -88,24 +120,19 @@ Fully backward compatible. Optionally simplify code:
 ## [1.0.0] - 2025-06-18
 
 ### ⚠️ Breaking Changes
-- ⬆️ Flutter SDK requirement updated to `>=3.27.0` (requires Dart `^3.7.0`).
-- ✨ `InputDecoration` support added — existing implementations may need to update.
-- ✨ "Deselect All" text customization introduced — may require updates in existing usage.
+- Flutter SDK requirement updated to `>=3.27.0` (requires Dart `^3.7.0`)
+- `InputDecoration` support added
+- "Deselect All" text customization introduced
 
-### 🛠️ Fixes & Improvements
-- ✅ Select All / Deselect All text now accepts only `String` for better consistency.
-- 🧹 Codebase optimized with minor refinements and cleanup.
-
+### Fixes & Improvements
+- Select All / Deselect All text now accepts only `String` for better consistency
+- Codebase optimized with minor refinements and cleanup
 
 ## [0.0.3] - 2025-06-17
-### Changed
-- add MIT License
+- Added MIT License
 
 ## [0.0.2] - 2025-06-17
-## Changed
-- update changelog
+- Updated changelog
 
 ## [0.0.1] - 2025-06-17
-## Added
-- Creation of flutter_Multi_Selector package.
-
+- Initial release of flutter_multi_selector package
