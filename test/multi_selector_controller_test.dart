@@ -21,8 +21,14 @@ void main() {
       );
 
       expect(controller.selectedValues, containsAll(['1', '3']));
-      expect(controller.items.firstWhere((i) => i.value == '1').selected, isTrue);
-      expect(controller.items.firstWhere((i) => i.value == '2').selected, isFalse);
+      expect(
+        controller.items.firstWhere((i) => i.value == '1').selected,
+        isTrue,
+      );
+      expect(
+        controller.items.firstWhere((i) => i.value == '2').selected,
+        isFalse,
+      );
     });
 
     test('toggleSelection updates state', () {
@@ -33,11 +39,17 @@ void main() {
 
       controller.toggleSelection('1');
       expect(controller.selectedValues, contains('1'));
-      expect(controller.items.firstWhere((i) => i.value == '1').selected, isTrue);
+      expect(
+        controller.items.firstWhere((i) => i.value == '1').selected,
+        isTrue,
+      );
 
       controller.toggleSelection('1');
       expect(controller.selectedValues, isNot(contains('1')));
-      expect(controller.items.firstWhere((i) => i.value == '1').selected, isFalse);
+      expect(
+        controller.items.firstWhere((i) => i.value == '1').selected,
+        isFalse,
+      );
     });
 
     test('selectAll selects all items', () {
@@ -87,7 +99,7 @@ void main() {
       // Note: The controller sorts alphabetically within groups.
       // Selected: Banana
       // Unselected: Apple, Cherry
-      
+
       expect(controller.items[0].label, 'Banana');
       expect(controller.items[1].label, 'Apple');
       expect(controller.items[2].label, 'Cherry');

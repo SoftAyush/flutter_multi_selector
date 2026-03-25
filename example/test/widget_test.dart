@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:example/main.dart';
+import 'package:flutter_multi_selector_example/main.dart';
 
 void main() {
   testWidgets('Example app smoke test', (WidgetTester tester) async {

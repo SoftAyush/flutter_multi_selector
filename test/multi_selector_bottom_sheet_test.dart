@@ -58,8 +58,9 @@ void main() {
       expect(checkbox.value, isTrue);
     });
 
-    testWidgets('confirm returns selected values via showModalBottomSheet',
-        (WidgetTester tester) async {
+    testWidgets('confirm returns selected values via showModalBottomSheet', (
+      WidgetTester tester,
+    ) async {
       List<String>? result;
 
       await tester.pumpWidget(
@@ -72,11 +73,12 @@ void main() {
                     context: context,
                     isScrollControlled: true,
                     backgroundColor: Colors.transparent,
-                    builder: (context) => MultiSelectorBottomSheet<String>(
-                      items: items,
-                      initialValue: const [],
-                      onConfirm: (values) {},
-                    ),
+                    builder:
+                        (context) => MultiSelectorBottomSheet<String>(
+                          items: items,
+                          initialValue: const [],
+                          onConfirm: (values) {},
+                        ),
                   );
                 },
                 child: const Text('Open'),
@@ -141,8 +143,9 @@ void main() {
       expect(find.text('CANCEL'), findsOneWidget);
     });
 
-    testWidgets('select all selects and deselects all items',
-        (WidgetTester tester) async {
+    testWidgets('select all selects and deselects all items', (
+      WidgetTester tester,
+    ) async {
       await tester.pumpWidget(
         MaterialApp(
           home: Scaffold(

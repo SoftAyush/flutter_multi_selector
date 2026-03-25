@@ -16,11 +16,7 @@ class MultiSelectorItem<T> {
   /// Creates a [MultiSelectorItem] with positional parameters.
   ///
   /// This is the simpler way to create items, matching the API of multi_select_flutter.
-  MultiSelectorItem(
-    this.value,
-    this.label, {
-    this.selected = false,
-  });
+  MultiSelectorItem(this.value, this.label, {this.selected = false});
 
   /// Creates a [MultiSelectorItem] with named parameters.
   ///
@@ -32,11 +28,7 @@ class MultiSelectorItem<T> {
   });
 
   /// Creates a copy of this item with the given fields replaced with new values.
-  MultiSelectorItem<T> copyWith({
-    T? value,
-    String? label,
-    bool? selected,
-  }) {
+  MultiSelectorItem<T> copyWith({T? value, String? label, bool? selected}) {
     return MultiSelectorItem(
       value ?? this.value,
       label ?? this.label,
@@ -56,5 +48,6 @@ class MultiSelectorItem<T> {
   int get hashCode => value.hashCode ^ label.hashCode;
 
   @override
-  String toString() => 'MultiSelectorItem(value: $value, label: $label, selected: $selected)';
+  String toString() =>
+      'MultiSelectorItem(value: $value, label: $label, selected: $selected)';
 }

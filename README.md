@@ -1,117 +1,147 @@
-# flutter_multi_selector
+<div align="center">
+  <img src="https://raw.githubusercontent.com/SoftAyush/flutter_multi_selector/master/docs/img/dialog_list.jpeg" width="160" />
+  <h1>Flutter Multi Selector</h1>
+  <p>A powerful, flexible, and premium multi-selection package for Flutter.</p>
 
-[![Pub Version](https://img.shields.io/pub/v/flutter_multi_selector.svg)](https://pub.dev/packages/flutter_multi_selector)  [![GitHub issues](https://img.shields.io/github/issues/SoftAyush/flutter_multi_selector.svg)](https://github.com/SoftAyush/flutter_multi_selector/issues)  [![GitHub stars](https://img.shields.io/github/stars/SoftAyush/flutter_multi_selector.svg?style=social)](https://github.com/SoftAyush/flutter_multi_selector/stargazers)  [![GitHub license](https://img.shields.io/github/license/SoftAyush/flutter_multi_selector.svg)](https://github.com/SoftAyush/flutter_multi_selector/blob/master/LICENSE)
+[![Pub Version](https://img.shields.io/pub/v/flutter_multi_selector.svg)](https://pub.dev/packages/flutter_multi_selector)
+[![GitHub issues](https://img.shields.io/github/issues/SoftAyush/flutter_multi_selector.svg)](https://github.com/SoftAyush/flutter_multi_selector/issues)
+[![GitHub stars](https://img.shields.io/github/stars/SoftAyush/flutter_multi_selector.svg?style=social)](https://github.com/SoftAyush/flutter_multi_selector/stargazers)
+[![GitHub license](https://img.shields.io/github/license/SoftAyush/flutter_multi_selector.svg)](https://github.com/SoftAyush/flutter_multi_selector/blob/master/LICENSE)
 
-It is a powerful Flutter package that provides an intuitive multi-selection
-dialog with advanced customization options. Beyond standard features like search, select-all, and
-checkbox/chip selection styles, it offers dynamic item separation—automatically grouping selected
-items at the top for better visibility—and per-item theming, allowing different colors and styles
-for each option. The widget supports responsive sizing, ensuring optimal display on any device, and
-includes built-in accessibility for screen readers. With flexible callbacks and seamless state
-management, it integrates effortlessly into any app, making it perfect for complex filtering,
-preference selection, or multi-choice forms while maintaining a polished, user-friendly interface.
+</div>
 
-## Disclaimer
+---
 
-The `flutter_multi_selector` package only supports:
-Dart SDK: `^3.7.0` (minimum required)
-Flutter SDK: `>=3.27.0` (stable channel recommended)
-This ensures compatibility with the latest Flutter features, performance improvements, and null
-safety.
-⚠ Older versions of Flutter/Dart are not supported.
-📌 Upgrade your environment if needed to avoid conflicts.
-For Flutter versions below 3.27.0, consider checking for legacy alternatives or updating your
-project.
+`flutter_multi_selector` makes multi-item selection in Flutter intuitive and beautiful. Whether you need a simple list in a dialog or a modern, searchable bottom sheet, this package provides everything you need with a premium feel and developer-friendly API.
 
-( Note: Package maintained for modern Flutter ecosystems only.)
+## 🌟 Beginner's Guide: Your First Widget
 
-## Features
+New to Flutter? No problem! Follow these 3 simple steps to add multi-selection to your app.
 
-- Custom multi-select dialog field widget
-- Supports form validation with error messages
-- Searchable list of selectable items
-- Select All / Deselect All functionality
-- Initial value support for pre-selected items
-- Customizable button text and field styling
+### 1. Installation
+Add the package to your `pubspec.yaml` file:
 
-### MultiSelectorDialogField
+```yaml
+dependencies:
+  flutter_multi_selector: ^1.2.0+1
+```
+Then run `flutter pub get` in your terminal.
 
-This widget shows a button that opens a multi-select dialog. It integrates with Flutter forms and
-allows selecting multiple items with optional search and select-all.
+### 2. Prepare Your Data
+The package uses `MultiSelectorItem` to represent each option. It needs a **Value** (what your code uses) and a **Label** (what the user sees).
 
 ```dart
-MultiSelectorDialogField(
-  // Use the new simplified constructor
-  items: animals
-      .map((animal) => MultiSelectorItem(animal, animal))
-      .toList(),
-  initialValue: _selectedAnimals,
+// A simple list of fruits
+final fruits = ["Apple", "Banana", "Cherry", "Date"];
+
+// Convert them to MultiSelectorItems
+final items = fruits.map((fruit) => MultiSelectorItem(fruit, fruit)).toList();
+```
+
+### 3. Add the Widget
+Place the `MultiSelectorDialogField` in your widget tree:
+
+```dart
+List<String> _selectedFruits = [];
+
+MultiSelectorDialogField<String>(
+  items: items,
+  title: const Text("Select Your Favorites"),
+  onConfirm: (values) {
+    setState(() {
+      _selectedFruits = values;
+    });
+  },
+)
+```
+
+---
+
+## 🏗️ Core Concepts
+
+### 📊 Understanding MultiSelectorItem<T>
+The generic type `<T>` allows you to use any data type as the value (Strings, Integers, or even custom Objects).
+
+```dart
+// Using Integers as values
+MultiSelectorItem<int>(1, "Option One")
+
+// Using custom Objects as values
+MultiSelectorItem<User>(userObj, userObj.name)
+```
+
+### 🏠 Presentation Styles
+Choose the style that fits your app's UX:
+- **`MultiSelectorDialogField`**: A focused centered dialog. Best for larger screens or complex selections.
+- **`MultiSelectorBottomSheetField`**: A modern slide-up panel. Best for mobile-first apps and quick interactions.
+
+---
+
+## ✨ Key Features
+
+*   🎨 **Fully Customizable**: Control colors, typography, shapes, and animations.
+*   🔍 **Smart Search bar**: Filter through large lists instantly as you type.
+*   ✅ **Bulk Selection**: Native support for "Select All" and "Clear All".
+*   🗂️ **Selected Branding**: Optionally group selected items at the top.
+*   📝 **Form Integration**: Built-in validation works perfectly with Flutter `Form` widgets.
+
+---
+
+## 🎨 Advanced Usage & Recipes
+
+### Form Validation
+Make sure the user selects at least one item before submitting:
+
+```dart
+MultiSelectorDialogField<String>(
+  items: items,
   validator: (values) {
-    if (values == null || values.isEmpty) {
-      return "Please select at least one item";
-    }
+    if (values == null || values.isEmpty) return "Please select at least one item";
     return null;
   },
   autovalidateMode: AutovalidateMode.onUserInteraction,
-  buttonText: const Text("Select Animals"),
-  onConfirm: (values) {
-    setState(() {
-      _selectedAnimals = values;
-    });
-  },
-  searchable: true,
-  showSelectAll: true,
-  // New in v1.1.0: Control dialog dismissal
-  isDismissible: true,
+  onConfirm: (values) => print("Confirmed: $values"),
+)
+```
+
+### Custom Styling
+Match your app's theme perfectly:
+
+```dart
+MultiSelectorDialogField<String>(
+  items: items,
+  selectedColor: Colors.deepPurple,
+  checkColor: Colors.white,
   fieldShape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(8),
-    side: const BorderSide(color: Colors.grey),
+    borderRadius: BorderRadius.circular(15),
+    side: const BorderSide(color: Colors.deepPurple, width: 2),
   ),
 )
 ```
 
-### New in v1.1.0
+---
 
-- **Simplified API**: `MultiSelectorItem` now supports positional arguments: `MultiSelectorItem(value, label)`.
-- **Dialog Control**: Added `isDismissible` parameter to `MultiSelectorDialogField` to control whether the dialog can be dismissed by tapping outside.
-- **Enhanced Item Handling**: `MultiSelectorItem` now includes `copyWith`, equality operators, and better `toString` support.
+## 📱 Showcase Gallery
 
-### Validation and Submission
+| Dialog Style | Bottom Sheet Style |
+| :---: | :---: |
+| ![Dialog List](https://raw.githubusercontent.com/SoftAyush/flutter_multi_selector/master/docs/img/dialog_list.jpeg) | ![BottomSheet List](https://raw.githubusercontent.com/SoftAyush/flutter_multi_selector/master/docs/img/bottomsheet_list.jpeg) |
+| ![Dialog Chip](https://raw.githubusercontent.com/SoftAyush/flutter_multi_selector/master/docs/img/dialog_chip.jpeg) | ![BottomSheet Chip](https://raw.githubusercontent.com/SoftAyush/flutter_multi_selector/master/docs/img/bottomsheet_chip.jpeg) |
 
-You can use a `GlobalKey<FormState>` to validate selections and trigger actions on submit:
+---
 
-```
-final _formKey = GlobalKey<FormState>();
+## 🛠 Supported Platforms
 
-ElevatedButton(
-  onPressed: () {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Selected Animals: $_selectedAnimals")),
-      );
-    }
-  },
-  child: const Text("Submit Form"),
-)
+| Android | iOS | Web | Windows | macOS | Linux |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-```
+---
 
-## 📚 Use Cases
+## 🤝 Contributing & Feedback
 
-flutter_multi_selector is ideal for:
-Multi-choice filtering (e.g., categories, tags, preferences)
-Collecting multiple inputs in forms
-Feature toggles and app settings
-Surveys or polls with many options
-It supports chip or checkbox layouts, item theming, and dynamic reordering (selected items shown at
-the top).
+We love contributions! If you have a feature request or found a bug, please let us know:
+- **Issues**: [GitHub Issues](https://github.com/SoftAyush/flutter_multi_selector/issues)
+- **PRs**: [GitHub Pull Requests](https://github.com/SoftAyush/flutter_multi_selector/pulls)
 
-## 🤝 Contributing
-
-Contributions are welcome!
-Please submit issues or PRs on the GitHub repository.
-
-## 📖 Inspiration
-
-This package was inspired by `multi_select_flutter` and was enhanced to offer greater flexibility,
-cleaner UI, and better developer ergonomics.
+Made with ❤️ for the Flutter community.

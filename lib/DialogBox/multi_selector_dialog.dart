@@ -1,4 +1,8 @@
+/// Multi-selection dialog implementation.
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_multi_selector/Controllers/multi_selector_controller.dart';
 import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
@@ -272,7 +276,8 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
                   : widget.itemsTextStyle,
         ),
         selectedColor: color?.withAlpha(51),
-        backgroundColor: widget.unselectedColor ?? theme.colorScheme.surfaceContainerHighest,
+        backgroundColor:
+            widget.unselectedColor ?? theme.colorScheme.surfaceContainerHighest,
         onSelected: (checked) => _controller.toggleSelection(item.value),
       ),
     );
@@ -311,10 +316,7 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: theme.primaryColor,
-              width: 2,
-            ),
+            borderSide: BorderSide(color: theme.primaryColor, width: 2),
           ),
         ),
         onChanged: _controller.updateSearchQuery,
@@ -463,7 +465,10 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
       child: Wrap(
         spacing: 8.0,
         runSpacing: 8.0,
-        children: _controller.items.map((item) => _buildChipItem(item, theme)).toList(),
+        children:
+            _controller.items
+                .map((item) => _buildChipItem(item, theme))
+                .toList(),
       ),
     );
   }
@@ -541,13 +546,18 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
               widget.backgroundColor ??
               theme.dialogTheme.backgroundColor ??
               theme.colorScheme.surface,
-          insetPadding: const EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
+          insetPadding: const EdgeInsets.symmetric(
+            horizontal: 0.0,
+            vertical: 0.0,
+          ),
           child: ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth:
-                  widget.dialogWidth ?? MediaQuery.of(context).size.width * 0.90,
+                  widget.dialogWidth ??
+                  MediaQuery.of(context).size.width * 0.90,
               maxHeight:
-                  widget.dialogHeight ?? MediaQuery.of(context).size.height * 0.90,
+                  widget.dialogHeight ??
+                  MediaQuery.of(context).size.height * 0.90,
               minWidth: widget.dialogWidth ?? 300.0,
             ),
             child: Padding(
@@ -557,7 +567,8 @@ class _MultiSelectorDialogState<T> extends State<MultiSelectorDialog<T>> {
                   _buildHeader(),
                   if (widget.showSelectAll) _buildSelectAllButton(),
                   Expanded(
-                    child: isChipStyle ? _buildChipContent() : _buildListContent(),
+                    child:
+                        isChipStyle ? _buildChipContent() : _buildListContent(),
                   ),
                   _buildActionButtons(),
                 ],

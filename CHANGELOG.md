@@ -1,3 +1,15 @@
+## [1.2.0+1] - 2026-03-25
+
+### 💎 Documentation Overhaul
+- **Complete Redesign**: Transformed `README.md` and `docs/index.html` with a premium, aesthetic.
+- **Beginner Friendly**: Added "Your First Widget" guide and a 4-step tutorial for quick setup.
+- **Deep Dive into Data**: Added detailed guides on using custom objects with `MultiSelectorItem`.
+- **Fully Responsive**: Documentation site now features a mobile-optimized navigation drawer.
+- **API Reference**: Improved parameter descriptions with clear, beginner-friendly explanations.
+- **FAQ Section**: Added answers to common questions about styling, search, and pre-selection.
+
+---
+
 ## [1.2.0] - 2026-03-19
 
 ### ✨ Features

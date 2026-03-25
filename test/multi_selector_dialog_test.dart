@@ -65,11 +65,12 @@ void main() {
                 onPressed: () async {
                   result = await showDialog<List<String>>(
                     context: context,
-                    builder: (context) => MultiSelectorDialog<String>(
-                      items: items,
-                      initialValue: const [],
-                      onConfirm: (values) {},
-                    ),
+                    builder:
+                        (context) => MultiSelectorDialog<String>(
+                          items: items,
+                          initialValue: const [],
+                          onConfirm: (values) {},
+                        ),
                   );
                 },
                 child: const Text('Open'),

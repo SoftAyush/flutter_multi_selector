@@ -1,4 +1,8 @@
+/// Multi-selection bottom sheet implementation.
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_multi_selector/Controllers/multi_selector_controller.dart';
 import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
@@ -230,14 +234,11 @@ class _MultiSelectorBottomSheetState<T>
       ),
       selectedColor: color.withAlpha(31),
       backgroundColor:
-          widget.unselectedColor ??
-          theme.colorScheme.surfaceContainerHighest,
+          widget.unselectedColor ?? theme.colorScheme.surfaceContainerHighest,
       checkmarkColor: color,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
-        side: BorderSide(
-          color: isSelected ? color : theme.dividerColor,
-        ),
+        side: BorderSide(color: isSelected ? color : theme.dividerColor),
       ),
       onSelected: (checked) => _controller.toggleSelection(item.value),
     );
@@ -301,10 +302,7 @@ class _MultiSelectorBottomSheetState<T>
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide(
-              color: theme.colorScheme.primary,
-              width: 2,
-            ),
+            borderSide: BorderSide(color: theme.colorScheme.primary, width: 2),
           ),
         ),
         onChanged: _controller.updateSearchQuery,
@@ -326,10 +324,7 @@ class _MultiSelectorBottomSheetState<T>
                     theme.textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.w600,
                     ) ??
-                    const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                 child: widget.title!,
               ),
             ),
@@ -377,10 +372,7 @@ class _MultiSelectorBottomSheetState<T>
               _controller.selectAll();
             }
           },
-          icon: Icon(
-            allSelected ? Icons.deselect : Icons.select_all,
-            size: 18,
-          ),
+          icon: Icon(allSelected ? Icons.deselect : Icons.select_all, size: 18),
           label: Text(buttonText),
           style: OutlinedButton.styleFrom(
             foregroundColor:
@@ -412,8 +404,7 @@ class _MultiSelectorBottomSheetState<T>
     return ListView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       itemCount: _controller.items.length,
-      itemBuilder: (context, index) =>
-          _buildListItem(_controller.items[index]),
+      itemBuilder: (context, index) => _buildListItem(_controller.items[index]),
     );
   }
 
@@ -444,11 +435,7 @@ class _MultiSelectorBottomSheetState<T>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.search_off_rounded,
-              size: 48,
-              color: theme.hintColor,
-            ),
+            Icon(Icons.search_off_rounded, size: 48, color: theme.hintColor),
             const SizedBox(height: 12),
             Text(
               "No items found",
@@ -470,8 +457,7 @@ class _MultiSelectorBottomSheetState<T>
         children: [
           Expanded(
             child: OutlinedButton(
-              onPressed: () =>
-                  Navigator.of(context).pop(widget.initialValue),
+              onPressed: () => Navigator.of(context).pop(widget.initialValue),
               style: OutlinedButton.styleFrom(
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 side: BorderSide(color: theme.dividerColor),
@@ -544,9 +530,7 @@ class _MultiSelectorBottomSheetState<T>
                 widget.backgroundColor ??
                 theme.bottomSheetTheme.backgroundColor ??
                 theme.colorScheme.surface,
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(20),
-            ),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
           ),
           child: Column(
             children: [

@@ -1,4 +1,8 @@
+/// Controller for managing multi-selection state.
+library;
+
 import 'package:flutter/material.dart';
+
 import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
 
 /// Controller to manage the state of [MultiSelectorDialog].
@@ -10,13 +14,18 @@ class MultiSelectorController<T> extends ChangeNotifier {
   List<MultiSelectorItem<T>> _filteredItems = [];
   final bool _separateSelectedItems;
 
+  /// Creates a [MultiSelectorController] with the given items and initial selection.
+  ///
+  /// The [items] list contains all available options, while [initialSelectedValues]
+  /// is the list of values that are selected by default.
+  /// If [separateSelectedItems] is true, selected items will be moved to the top.
   MultiSelectorController({
     required List<MultiSelectorItem<T>> items,
     required List<T> initialSelectedValues,
     bool separateSelectedItems = false,
-  })  : _allItems = items,
-        _selectedValues = Set<T>.from(initialSelectedValues),
-        _separateSelectedItems = separateSelectedItems {
+  }) : _allItems = items,
+       _selectedValues = Set<T>.from(initialSelectedValues),
+       _separateSelectedItems = separateSelectedItems {
     _updateFilteredItems();
   }
 
@@ -95,9 +104,10 @@ class MultiSelectorController<T> extends ChangeNotifier {
       tempItems = _allItems;
     } else {
       final query = _searchQuery.toLowerCase();
-      tempItems = _allItems.where((item) {
-        return item.label.toLowerCase().contains(query);
-      }).toList();
+      tempItems =
+          _allItems.where((item) {
+            return item.label.toLowerCase().contains(query);
+          }).toList();
     }
 
     // 2. Update 'selected' property on items for UI binding
@@ -120,7 +130,7 @@ class MultiSelectorController<T> extends ChangeNotifier {
           unselected.add(item);
         }
       }
-      
+
       // Sort alphabetically (as per original logic)
       selected.sort((a, b) => a.label.compareTo(b.label));
       unselected.sort((a, b) => a.label.compareTo(b.label));

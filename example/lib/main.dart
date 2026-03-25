@@ -41,27 +41,65 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
 
   // Data Sources
   final List<String> animals = [
-    "Dog", "Cat", "Elephant", "Tiger", "Lion",
-    "Cow", "Horse", "Monkey", "Deer", "Rabbit"
+    "Dog",
+    "Cat",
+    "Elephant",
+    "Tiger",
+    "Lion",
+    "Cow",
+    "Horse",
+    "Monkey",
+    "Deer",
+    "Rabbit",
   ];
 
   final List<String> fruits = [
-    "Apple", "Banana", "Cherry", "Date", "Elderberry",
-    "Fig", "Grape", "Honeydew", "Kiwi", "Lemon"
+    "Apple",
+    "Banana",
+    "Cherry",
+    "Date",
+    "Elderberry",
+    "Fig",
+    "Grape",
+    "Honeydew",
+    "Kiwi",
+    "Lemon",
   ];
 
   final List<String> tags = [
-    "Work", "Personal", "Urgent", "Later", "Done", "Meeting", "Review"
+    "Work",
+    "Personal",
+    "Urgent",
+    "Later",
+    "Done",
+    "Meeting",
+    "Review",
   ];
 
   final List<String> countries = [
-    "Nepal", "India", "Japan", "USA", "UK",
-    "Germany", "France", "Australia", "Canada", "Brazil"
+    "Nepal",
+    "India",
+    "Japan",
+    "USA",
+    "UK",
+    "Germany",
+    "France",
+    "Australia",
+    "Canada",
+    "Brazil",
   ];
 
   final List<String> skills = [
-    "Flutter", "Dart", "React", "Node.js", "Python",
-    "Firebase", "Docker", "Kubernetes", "AWS", "GraphQL"
+    "Flutter",
+    "Dart",
+    "React",
+    "Node.js",
+    "Python",
+    "Firebase",
+    "Docker",
+    "Kubernetes",
+    "AWS",
+    "GraphQL",
   ];
 
   // State Variables
@@ -91,7 +129,7 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
               });
             },
             tooltip: "Reset Form",
-          )
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -101,7 +139,10 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildHeader("Flutter Multi Selector", "A comprehensive demo of all features"),
+              _buildHeader(
+                "Flutter Multi Selector",
+                "A comprehensive demo of all features",
+              ),
               const SizedBox(height: 32),
 
               // ---------------------------------------------------------
@@ -183,11 +224,16 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 ),
                 colorBuilder: (value) {
                   switch (value) {
-                    case "Urgent": return Colors.red;
-                    case "Work": return Colors.blue;
-                    case "Personal": return Colors.green;
-                    case "Done": return Colors.grey;
-                    default: return Colors.orange;
+                    case "Urgent":
+                      return Colors.red;
+                    case "Work":
+                      return Colors.blue;
+                    case "Personal":
+                      return Colors.green;
+                    case "Done":
+                      return Colors.grey;
+                    default:
+                      return Colors.orange;
                   }
                 },
                 onConfirm: (values) {
@@ -251,13 +297,20 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                 ),
                 colorBuilder: (value) {
                   switch (value) {
-                    case "Flutter": return Colors.blue;
-                    case "Dart": return Colors.teal;
-                    case "React": return Colors.cyan;
-                    case "Firebase": return Colors.orange;
-                    case "Python": return Colors.green;
-                    case "Docker": return Colors.indigo;
-                    default: return Colors.deepPurple;
+                    case "Flutter":
+                      return Colors.blue;
+                    case "Dart":
+                      return Colors.teal;
+                    case "React":
+                      return Colors.cyan;
+                    case "Firebase":
+                      return Colors.orange;
+                    case "Python":
+                      return Colors.green;
+                    case "Docker":
+                      return Colors.indigo;
+                    default:
+                      return Colors.deepPurple;
                   }
                 },
                 onConfirm: (values) {
@@ -281,7 +334,10 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
                       }
                     },
                     icon: const Icon(Icons.check_circle_outline),
-                    label: const Text("Submit Form", style: TextStyle(fontSize: 16)),
+                    label: const Text(
+                      "Submit Form",
+                      style: TextStyle(fontSize: 16),
+                    ),
                   ),
                 ),
               ),
@@ -306,9 +362,9 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
         const SizedBox(height: 8),
         Text(
           subtitle,
-          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-            color: Colors.grey[600],
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.bodyLarge?.copyWith(color: Colors.grey[600]),
         ),
         const Divider(height: 32),
       ],
@@ -323,18 +379,12 @@ class _MultiSelectExamplePageState extends State<MultiSelectExamplePage> {
         children: [
           Text(
             title,
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
             description,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
         ],
       ),

@@ -1,4 +1,8 @@
+/// FormField implementation for the multi-selection bottom sheet.
+library;
+
 import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_selector/BottomSheet/multi_selector_bottom_sheet.dart';
 import 'package:flutter_multi_selector/Utils/multi_selector_item.dart';
@@ -171,49 +175,49 @@ class MultiSelectorBottomSheetField<V> extends FormField<List<V>> {
     super.validator,
     super.autovalidateMode = AutovalidateMode.disabled,
   }) : super(
-    initialValue: initialValue,
-    builder: (FormFieldState<List<V>> state) {
-      return _MultiSelectorBottomSheetFieldView<V>(
-        state: state,
-        items: items,
-        onConfirm: onConfirm,
-        title: title,
-        buttonText: buttonText,
-        buttonIcon: buttonIcon,
-        decoration: decoration,
-        isDense: isDense,
-        initialValue: initialValue,
-        selectedColor: selectedColor,
-        searchable: searchable,
-        confirmText: confirmText,
-        cancelText: cancelText,
-        searchHint: searchHint,
-        colorBuilder: colorBuilder,
-        separateSelectedItems: separateSelectedItems,
-        fieldShape: fieldShape,
-        buttonBuilder: buttonBuilder,
-        showSelectAll: showSelectAll,
-        selectAllText: selectAllText,
-        clearAllText: clearAllText,
-        heightFraction: heightFraction,
-        barrierColor: barrierColor,
-        backgroundColor: backgroundColor,
-        unselectedColor: unselectedColor,
-        checkColor: checkColor,
-        itemsTextStyle: itemsTextStyle,
-        selectedItemsTextStyle: selectedItemsTextStyle,
-        searchTextStyle: searchTextStyle,
-        searchHintStyle: searchHintStyle,
-        searchIcon: searchIcon,
-        closeSearchIcon: closeSearchIcon,
-        onSelectionChanged: onSelectionChanged,
-        useChipsForSelection: useChipsForSelection,
-        isDismissible: isDismissible,
-        enableDrag: enableDrag,
-        showDragHandle: showDragHandle,
-      );
-    },
-  );
+         initialValue: initialValue,
+         builder: (FormFieldState<List<V>> state) {
+           return _MultiSelectorBottomSheetFieldView<V>(
+             state: state,
+             items: items,
+             onConfirm: onConfirm,
+             title: title,
+             buttonText: buttonText,
+             buttonIcon: buttonIcon,
+             decoration: decoration,
+             isDense: isDense,
+             initialValue: initialValue,
+             selectedColor: selectedColor,
+             searchable: searchable,
+             confirmText: confirmText,
+             cancelText: cancelText,
+             searchHint: searchHint,
+             colorBuilder: colorBuilder,
+             separateSelectedItems: separateSelectedItems,
+             fieldShape: fieldShape,
+             buttonBuilder: buttonBuilder,
+             showSelectAll: showSelectAll,
+             selectAllText: selectAllText,
+             clearAllText: clearAllText,
+             heightFraction: heightFraction,
+             barrierColor: barrierColor,
+             backgroundColor: backgroundColor,
+             unselectedColor: unselectedColor,
+             checkColor: checkColor,
+             itemsTextStyle: itemsTextStyle,
+             selectedItemsTextStyle: selectedItemsTextStyle,
+             searchTextStyle: searchTextStyle,
+             searchHintStyle: searchHintStyle,
+             searchIcon: searchIcon,
+             closeSearchIcon: closeSearchIcon,
+             onSelectionChanged: onSelectionChanged,
+             useChipsForSelection: useChipsForSelection,
+             isDismissible: isDismissible,
+             enableDrag: enableDrag,
+             showDragHandle: showDragHandle,
+           );
+         },
+       );
 }
 
 /// The private view class for [MultiSelectorBottomSheetField].
@@ -407,13 +411,12 @@ class _MultiSelectorBottomSheetFieldViewState<V>
             contentPadding:
                 isDense
                     ? const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
-                      )
+                      vertical: 8.0,
+                      horizontal: 12.0,
+                    )
                     : null,
             isDense: isDense,
-            suffixIcon:
-                widget.buttonIcon ?? const Icon(Icons.arrow_drop_down),
+            suffixIcon: widget.buttonIcon ?? const Icon(Icons.arrow_drop_down),
           ),
           isEmpty:
               widget.buttonText?.data == null ||
@@ -423,22 +426,22 @@ class _MultiSelectorBottomSheetFieldViewState<V>
             child:
                 shouldShowError && widget.buttonText != null
                     ? DefaultTextStyle(
-                        style: (widget.decoration?.hintStyle ??
-                                theme.textTheme.bodyMedium)!
-                            .copyWith(color: theme.colorScheme.error),
-                        child: widget.buttonText!,
-                      )
+                      style: (widget.decoration?.hintStyle ??
+                              theme.textTheme.bodyMedium)!
+                          .copyWith(color: theme.colorScheme.error),
+                      child: widget.buttonText!,
+                    )
                     : widget.buttonText ??
                         Text(
                           '',
                           style: (widget.decoration?.hintStyle ??
                                   theme.textTheme.bodyMedium)
                               ?.copyWith(
-                            color:
-                                shouldShowError
-                                    ? theme.colorScheme.error
-                                    : null,
-                          ),
+                                color:
+                                    shouldShowError
+                                        ? theme.colorScheme.error
+                                        : null,
+                              ),
                         ),
           ),
         ),
@@ -449,15 +452,15 @@ class _MultiSelectorBottomSheetFieldViewState<V>
         shouldShowError
             ? theme.colorScheme.error
             : _selectedItems.isNotEmpty
-                ? widget.selectedColor ?? theme.primaryColor
-                : theme.dividerColor;
+            ? widget.selectedColor ?? theme.primaryColor
+            : theme.dividerColor;
 
     final borderWidth =
         shouldShowError
             ? 1.5
             : _selectedItems.isNotEmpty
-                ? 1.25
-                : 1.0;
+            ? 1.25
+            : 1.0;
 
     return Material(
       shape:
@@ -481,11 +484,11 @@ class _MultiSelectorBottomSheetFieldViewState<V>
             children: [
               shouldShowError && widget.buttonText != null
                   ? DefaultTextStyle(
-                      style: (theme.textTheme.bodyMedium)!.copyWith(
-                        color: theme.colorScheme.error,
-                      ),
-                      child: widget.buttonText!,
-                    )
+                    style: (theme.textTheme.bodyMedium)!.copyWith(
+                      color: theme.colorScheme.error,
+                    ),
+                    child: widget.buttonText!,
+                  )
                   : widget.buttonText ??
                       Text(
                         'Select',
